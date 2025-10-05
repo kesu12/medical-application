@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Department Cabinet - Medical App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #0b1020; color: #e7ecf5; }
+    .wrap { min-height: 100vh; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:#121a33; border-bottom:1px solid #1f2a4a; }
+    .brand { font-weight: 600; }
+    .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+    .card { background:#121a33; border:1px solid #1f2a4a; border-radius:12px; padding:20px; }
+    .card h3 { margin: 0 0 16px; color: #9bb6ff; }
+    .btn { appearance:none; border:1px solid #2b3a63; background:#1a2444; color:#e7ecf5; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:600; margin: 4px; }
+    .btn:hover { background:#202c54; }
+    .btn.primary { background:#2c6bed; border-color:#2c6bed; }
+    .btn.primary:hover { background:#1f57c9; }
+    .btn.success { background:#10b981; border-color:#10b981; }
+    .btn.success:hover { background:#059669; }
+    .btn.warning { background:#f59e0b; border-color:#f59e0b; }
+    .btn.warning:hover { background:#d97706; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 8px; color: #a7b1c6; font-weight: 600; }
+    .form-group select, .form-group input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #1f2a4a; background: #0e1630; color: #e7ecf5; }
+    .info-card { background: #0e1630; border: 1px solid #1f2a4a; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .info-label { color: #a7b1c6; }
+    .info-value { color: #e7ecf5; font-weight: 600; }
+    .person-list { max-height: 300px; overflow-y: auto; }
+    .person-item { background: #0e1630; border: 1px solid #1f2a4a; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+    .person-name { font-weight: 600; color: #e7ecf5; }
+    .person-info { color: #a7b1c6; font-size: 14px; margin-top: 4px; }
+    .person-role { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-left: 8px; }
+    .role-doctor { background: #3b82f6; color: #fff; }
+    .role-nurse { background: #10b981; color: #000; }
+    .role-patient { background: #f59e0b; color: #000; }
+    .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .status.assigned { background: #10b981; color: #000; }
+    .status.unassigned { background: #f59e0b; color: #000; }
+    pre { white-space: pre-wrap; word-break: break-word; background:#0e1630; border:1px solid #1f2a4a; padding:12px; border-radius:8px; max-height: 300px; overflow-y: auto; }
+    a { color:#9bb6ff; text-decoration:none; }
+    .loading { opacity: 0.6; pointer-events: none; }
+    .notification-item { background: #1a2444; border-left: 4px solid #f59e0b; padding: 12px; margin-bottom: 8px; border-radius: 4px; }
+    .notification-message { color: #e7ecf5; font-weight: 600; }
+    .notification-details { color: #a7b1c6; font-size: 14px; margin-top: 4px; }
+    .urgent { border-left-color: #ef4444; }
+    .urgent .notification-message { color: #ef4444; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .stat-card { background: #0e1630; border: 1px solid #1f2a4a; border-radius: 8px; padding: 12px; text-align: center; }
+    .stat-number { font-size: 24px; font-weight: 600; color: #9bb6ff; }
+    .stat-label { font-size: 12px; color: #a7b1c6; margin-top: 4px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">Department Cabinet</div>
+    <div>
+      <a href="/dashboard" class="btn">Dashboard</a>
+      <button class="btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>Select Department</h3>
+      <div class="form-group">
+        <label for="departmentSelect">Choose Department:</label>
+        <select id="departmentSelect">
+          <option value="">Loading departments...</option>
+        </select>
+      </div>
+      <button class="btn primary" id="btnLoadDepartment">Load Department Data</button>
+    </div>
+
+    <div class="card" id="departmentInfoCard" style="display: none;">
+      <h3>Department Information</h3>
+      <div class="info-card" id="departmentInfo">
+        <div class="info-row">
+          <span class="info-label">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="departmentStatsCard" style="display: none;">
+      <h3>Department Statistics</h3>
+      <div class="stats-grid" id="departmentStats">
+        <div class="stat-card">
+          <div class="stat-number" id="patientsCount">-</div>
+          <div class="stat-label">Patients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="nursesCount">-</div>
+          <div class="stat-label">Nurses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="doctorsCount">-</div>
+          <div class="stat-label">Doctors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="unassignedCount">-</div>
+          <div class="stat-label">Unassigned</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="departmentPatientsCard" style="display: none;">
+      <h3>Department Patients</h3>
+      <button class="btn primary" id="btnLoadPatients">Load Patients</button>
+      <div class="person-list" id="patientsList">
+        <div class="person-item">
+          <div class="person-name">Click "Load Patients" to see department patients</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="departmentNursesCard" style="display: none;">
+      <h3>Department Nurses</h3>
+      <button class="btn primary" id="btnLoadNurses">Load Nurses</button>
+      <div class="person-list" id="nursesList">
+        <div class="person-item">
+          <div class="person-name">Click "Load Nurses" to see department nurses</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="departmentDoctorsCard" style="display: none;">
+      <h3>Department Doctors</h3>
+      <button class="btn primary" id="btnLoadDoctors">Load Doctors</button>
+      <div class="person-list" id="doctorsList">
+        <div class="person-item">
+          <div class="person-name">Click "Load Doctors" to see department doctors</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="assignmentCard" style="display: none;">
+      <h3>Assign Doctor to Patient</h3>
+      <div class="form-group">
+        <label for="patientSelect">Select Patient:</label>
+        <select id="patientSelect">
+          <option value="">Loading patients...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="doctorSelect">Select Doctor:</label>
+        <select id="doctorSelect">
+          <option value="">Loading doctors...</option>
+        </select>
+      </div>
+      <button class="btn success" id="btnAssignDoctor">Assign Doctor</button>
+      <pre id="outAssignment">Click to assign doctor</pre>
+    </div>
+
+    <div class="card" id="notificationsCard" style="display: none;">
+      <h3>Department Notifications</h3>
+      <button class="btn primary" id="btnLoadNotifications">Load Notifications</button>
+      <div id="notificationsList">
+        <div class="notification-item">
+          <div class="notification-message">Click "Load Notifications" to see department notifications</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  let currentDepartmentId = null;
+  let currentDepartment = null;
+
+  function show(obj){ return JSON.stringify(obj, null, 2); }
+
+  function updateDepartmentInfo(department) {
+    currentDepartment = department;
+    const infoCard = document.getElementById('departmentInfo');
+    infoCard.innerHTML = `
+      <div class="info-row">
+        <span class="info-label">Name:</span>
+        <span class="info-value">${department.name}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Description:</span>
+        <span class="info-value">${department.description || 'No description'}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Created:</span>
+        <span class="info-value">${new Date(department.createdAt).toLocaleDateString()}</span>
+      </div>
+    `;
+  }
+
+  function displayPeople(people, containerId, role) {
+    const container = document.getElementById(containerId);
+    if (people.length === 0) {
+      container.innerHTML = '<div class="person-item"><div class="person-name">No people found</div></div>';
+      return;
+    }
+
+    container.innerHTML = people.map(person => `
+      <div class="person-item">
+        <div class="person-name">
+          ${person.firstName} ${person.lastName}
+          <span class="person-role role-${role.toLowerCase()}">${role}</span>
+        </div>
+        <div class="person-info">
+          Email: ${person.email}<br>
+          Status: <span class="status ${person.confirmed ? 'assigned' : 'unassigned'}">${person.confirmed ? 'Active' : 'Inactive'}</span>
+          ${role === 'PATIENT' ? `<br>Doctor: ${person.assignedDoctor ? person.assignedDoctor.firstName + ' ' + person.assignedDoctor.lastName : 'Not assigned'}` : ''}
+          ${role === 'PATIENT' ? `<br>Nurse: ${person.assignedNurse ? person.assignedNurse.firstName + ' ' + person.assignedNurse.lastName : 'Not assigned'}` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function displayNotifications(notifications) {
+    const container = document.getElementById('notificationsList');
+    if (notifications.length === 0) {
+      container.innerHTML = '<div class="notification-item"><div class="notification-message">No notifications</div></div>';
+      return;
+    }
+
+    container.innerHTML = notifications.map(notification => `
+      <div class="notification-item ${notification.type === 'PATIENT_WITHOUT_DOCTOR' ? 'urgent' : ''}">
+        <div class="notification-message">${notification.message}</div>
+        <div class="notification-details">
+          Patient: ${notification.patientName}<br>
+          Department: ${notification.departmentName}<br>
+          Type: ${notification.type}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function showDepartmentCards() {
+    document.getElementById('departmentInfoCard').style.display = 'block';
+    document.getElementById('departmentStatsCard').style.display = 'block';
+    document.getElementById('departmentPatientsCard').style.display = 'block';
+    document.getElementById('departmentNursesCard').style.display = 'block';
+    document.getElementById('departmentDoctorsCard').style.display = 'block';
+    document.getElementById('assignmentCard').style.display = 'block';
+    document.getElementById('notificationsCard').style.display = 'block';
+  }
+
+  async function loadDepartments() {
+    try {
+      const res = await AppApi.apiGet('/api/admin/departments');
+      if (!res.ok) throw new Error('Failed to load departments: ' + res.status);
+      const departments = await res.json();
+      
+      const select = document.getElementById('departmentSelect');
+      select.innerHTML = '<option value="">Select a department...</option>';
+      departments.forEach(dept => {
+        const option = document.createElement('option');
+        option.value = dept.id;
+        option.textContent = `${dept.name} - ${dept.description || 'No description'}`;
+        select.appendChild(option);
+      });
+    } catch (e) {
+      console.error('Error loading departments:', e);
+    }
+  }
+
+  async function loadDepartmentData() {
+    if (!currentDepartmentId) return;
+
+    try {
+      // Load department info
+      const deptRes = await AppApi.apiGet(`/api/admin/departments/${currentDepartmentId}`);
+      if (deptRes.ok) {
+        const department = await deptRes.json();
+        updateDepartmentInfo(department);
+      }
+
+      // Load patients
+      const patientsRes = await AppApi.apiGet(`/api/assignments/patients-by-department/${currentDepartmentId}`);
+      if (patientsRes.ok) {
+        const patients = await patientsRes.json();
+        displayPeople(patients, 'patientsList', 'PATIENT');
+        document.getElementById('patientsCount').textContent = patients.length;
+        
+        // Update patient select
+        const patientSelect = document.getElementById('patientSelect');
+        patientSelect.innerHTML = '<option value="">Select a patient...</option>';
+        patients.forEach(patient => {
+          const option = document.createElement('option');
+          option.value = patient.userId;
+          option.textContent = `${patient.firstName} ${patient.lastName} (${patient.email})`;
+          patientSelect.appendChild(option);
+        });
+      }
+
+      // Load nurses
+      const nursesRes = await AppApi.apiGet(`/api/assignments/nurses-by-department/${currentDepartmentId}`);
+      if (nursesRes.ok) {
+        const nurses = await nursesRes.json();
+        displayPeople(nurses, 'nursesList', 'NURSE');
+        document.getElementById('nursesCount').textContent = nurses.length;
+      }
+
+      // Load doctors
+      const doctorsRes = await AppApi.apiGet(`/api/assignments/doctors-by-department/${currentDepartmentId}`);
+      if (doctorsRes.ok) {
+        const doctors = await doctorsRes.json();
+        displayPeople(doctors, 'doctorsList', 'DOCTOR');
+        document.getElementById('doctorsCount').textContent = doctors.length;
+        
+        // Update doctor select
+        const doctorSelect = document.getElementById('doctorSelect');
+        doctorSelect.innerHTML = '<option value="">Select a doctor...</option>';
+        doctors.forEach(doctor => {
+          const option = document.createElement('option');
+          option.value = doctor.userId;
+          option.textContent = `${doctor.firstName} ${doctor.lastName} (${doctor.email})`;
+          doctorSelect.appendChild(option);
+        });
+      }
+
+      // Load notifications
+      const notificationsRes = await AppApi.apiGet(`/api/department-cabinet/${currentDepartmentId}/notifications`);
+      if (notificationsRes.ok) {
+        const notifications = await notificationsRes.json();
+        displayNotifications(notifications);
+        document.getElementById('unassignedCount').textContent = notifications.length;
+      }
+
+    } catch (e) {
+      console.error('Error loading department data:', e);
+    }
+  }
+
+  // Event Listeners
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await AppApi.logout();
+    window.location.href = '/signin';
+  });
+
+  document.getElementById('btnLoadDepartment').addEventListener('click', async () => {
+    const departmentId = document.getElementById('departmentSelect').value;
+    if (!departmentId) {
+      alert('Please select a department');
+      return;
+    }
+    
+    currentDepartmentId = parseInt(departmentId);
+    showDepartmentCards();
+    await loadDepartmentData();
+  });
+
+  document.getElementById('btnLoadPatients').addEventListener('click', async () => {
+    if (!currentDepartmentId) return;
+    await loadDepartmentData();
+  });
+
+  document.getElementById('btnLoadNurses').addEventListener('click', async () => {
+    if (!currentDepartmentId) return;
+    await loadDepartmentData();
+  });
+
+  document.getElementById('btnLoadDoctors').addEventListener('click', async () => {
+    if (!currentDepartmentId) return;
+    await loadDepartmentData();
+  });
+
+  document.getElementById('btnAssignDoctor').addEventListener('click', async () => {
+    const patientId = document.getElementById('patientSelect').value;
+    const doctorId = document.getElementById('doctorSelect').value;
+    
+    if (!patientId || !doctorId) {
+      document.getElementById('outAssignment').textContent = 'Please select both patient and doctor';
+      return;
+    }
+
+    try {
+      const res = await AppApi.apiPost('/api/department-cabinet/assign-doctor-to-patient', null, {
+        patientId: parseInt(patientId),
+        doctorId: parseInt(doctorId)
+      });
+      if (!res.ok) throw new Error('Failed to assign doctor: ' + res.status);
+      const result = await res.json();
+      document.getElementById('outAssignment').textContent = show(result);
+      
+      // Refresh department data
+      await loadDepartmentData();
+    } catch (e) {
+      document.getElementById('outAssignment').textContent = 'Error: ' + e.message;
+    }
+  });
+
+  document.getElementById('btnLoadNotifications').addEventListener('click', async () => {
+    if (!currentDepartmentId) return;
+    await loadDepartmentData();
+  });
+
+  // Redirect to login if not logged in
+  if (!AppApi.isLoggedIn()) {
+    location.href = '/signin';
+  }
+
+  // Load initial data
+  window.addEventListener('load', async () => {
+    await loadDepartments();
+  });
+</script>
+</body>
+</html>
+

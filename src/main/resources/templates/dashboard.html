@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Medical App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #0b1020; color: #e7ecf5; }
+    .wrap { min-height: 100vh; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:#121a33; border-bottom:1px solid #1f2a4a; }
+    .brand { font-weight: 600; }
+    .container { padding: 20px; max-width: 980px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .card { background:#121a33; border:1px solid #1f2a4a; border-radius:12px; padding:16px; }
+    .btn { appearance:none; border:1px solid #2b3a63; background:#1a2444; color:#e7ecf5; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+    .btn.primary { background:#2c6bed; border-color:#2c6bed; }
+    pre { white-space: pre-wrap; word-break: break-word; background:#0e1630; border:1px solid #1f2a4a; padding:12px; border-radius:8px; }
+    a { color:#9bb6ff; text-decoration:none; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">Dashboard</div>
+    <div>
+      <a href="/" class="btn">Home</a>
+      <a href="/register" class="btn">Register</a>
+      <a href="/admin" class="btn" id="adminLink" style="display: none;">Admin Panel</a>
+      <button class="btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card" id="roleNavigation" style="display: none;">
+      <h3>Role-based Access</h3>
+      <div id="roleButtons">
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Profile (/api/auth/me)</h3>
+        <button class="btn primary" id="btnMe">Load profile</button>
+        <pre id="outMe">Click to load</pre>
+      </div>
+
+      <div class="card">
+        <h3>Unconfirmed users (ADMIN) (/api/admin/users/unconfirmed)</h3>
+        <button class="btn primary" id="btnUnconfirmed">Load</button>
+        <pre id="outUnconfirmed">Requires ADMIN</pre>
+      </div>
+
+      <div class="card">
+        <h3>Departments</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+          <input id="depName" placeholder="Name" style="flex:1; padding:8px; border-radius:8px; border:1px solid #1f2a4a; background:#0e1630; color:#e7ecf5;">
+          <input id="depDesc" placeholder="Description" style="flex:1; padding:8px; border-radius:8px; border:1px solid #1f2a4a; background:#0e1630; color:#e7ecf5;">
+          <button class="btn primary" id="btnCreateDep">Create</button>
+        </div>
+        <pre id="outDep">Fill and click Create</pre>
+      </div>
+
+      <div class="card">
+        <h3>Assignment Management</h3>
+        <button class="btn primary" id="btnLoadActivePatients">Load Active Patients</button>
+        <button class="btn primary" id="btnLoadPatientsWithoutDoctor">Load Patients Without Doctor</button>
+        <pre id="outAssignments">Click to load assignment data</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  function show(obj){ return JSON.stringify(obj, null, 2); }
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await AppApi.logout();
+    window.location.href = '/signin';
+  });
+
+  document.getElementById('btnMe').addEventListener('click', async () => {
+    try { 
+      const me = await AppApi.getMe(); 
+      document.getElementById('outMe').textContent = show(me);
+      
+      // Показываем админскую ссылку если пользователь админ
+      const adminLink = document.getElementById('adminLink');
+      if (me.role === 'ADMIN') {
+        adminLink.style.display = 'inline-block';
+      } else {
+        adminLink.style.display = 'none';
+      }
+    }
+    catch (e) { document.getElementById('outMe').textContent = e.message; }
+  });
+
+  document.getElementById('btnUnconfirmed').addEventListener('click', async () => {
+    try {
+      const res = await AppApi.apiGet('/api/admin/users/unconfirmed');
+      if (!res.ok) throw new Error('Request failed: ' + res.status);
+      const data = await res.json();
+      document.getElementById('outUnconfirmed').textContent = show(data);
+    } catch (e) {
+      document.getElementById('outUnconfirmed').textContent = e.message;
+    }
+  });
+
+  document.getElementById('btnCreateDep').addEventListener('click', async () => {
+    const name = document.getElementById('depName').value.trim();
+    const description = document.getElementById('depDesc').value.trim() || null;
+    try {
+      const res = await AppApi.apiPost('/api/admin/department/add', { name, description });
+      if (!res.ok) throw new Error('Create failed: ' + res.status);
+      const data = await res.json();
+      document.getElementById('outDep').textContent = show(data);
+    } catch (e) {
+      document.getElementById('outDep').textContent = e.message;
+    }
+  });
+
+  // Redirect to login if not logged in
+  if (!AppApi.isLoggedIn()) {
+    location.href = '/signin';
+  }
+
+  // Role-based navigation
+  function setupRoleNavigation(user) {
+    const roleNavigation = document.getElementById('roleNavigation');
+    const roleButtons = document.getElementById('roleButtons');
+    
+    if (!user || !user.role) return;
+    
+    roleNavigation.style.display = 'block';
+    roleButtons.innerHTML = '';
+    
+    // Common buttons for all roles
+    const commonButtons = [
+      { text: 'View Profile', href: '#', action: () => document.getElementById('btnMe').click() }
+    ];
+    
+    // Role-specific buttons
+    const roleSpecificButtons = {
+      'PATIENT': [
+        { text: 'Patient Cabinet', href: '/patient-cabinet', class: 'btn primary' },
+        { text: 'My Assignments', href: '#', action: () => loadPatientAssignments() }
+      ],
+      'NURSE': [
+        { text: 'Nurse Cabinet', href: '/nurse-cabinet', class: 'btn primary' },
+        { text: 'My Patients', href: '#', action: () => loadNursePatients() },
+        { text: 'All Patients', href: '#', action: () => loadAllPatients() }
+      ],
+      'DOCTOR': [
+        { text: 'Doctor Cabinet', href: '/doctor-cabinet', class: 'btn primary' },
+        { text: 'My Patients', href: '#', action: () => loadDoctorPatients() },
+        { text: 'Patients Without Doctor', href: '#', action: () => loadPatientsWithoutDoctor() }
+      ],
+      'ADMIN': [
+        { text: 'Admin Panel', href: '/admin', class: 'btn primary' },
+        { text: 'Department Cabinet', href: '/department-cabinet', class: 'btn primary' },
+        { text: 'Assignment Admin', href: '/assignment-admin', class: 'btn primary' },
+        { text: 'Assignment Management', href: '#', action: () => loadAssignmentData() }
+      ]
+    };
+    
+    // Add common buttons
+    commonButtons.forEach(btn => {
+      const button = document.createElement('button');
+      button.className = 'btn';
+      button.textContent = btn.text;
+      if (btn.action) {
+        button.addEventListener('click', btn.action);
+      }
+      roleButtons.appendChild(button);
+    });
+    
+    // Add role-specific buttons
+    const specificButtons = roleSpecificButtons[user.role] || [];
+    specificButtons.forEach(btn => {
+      const button = document.createElement('a');
+      button.className = btn.class || 'btn';
+      button.textContent = btn.text;
+      button.href = btn.href;
+      if (btn.action) {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          btn.action();
+        });
+      }
+      roleButtons.appendChild(button);
+    });
+  }
+
+  // Helper functions for role-specific actions
+  async function loadPatientAssignments() {
+    try {
+      const me = await AppApi.getMe();
+      document.getElementById('outAssignments').textContent = show({
+        patient: me,
+        assignedNurse: me.assignedNurse,
+        assignedDoctor: me.assignedDoctor,
+        department: me.department
+      });
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function loadNursePatients() {
+    try {
+      const me = await AppApi.getMe();
+      const res = await AppApi.apiGet(`/api/assignments/patients-by-nurse/${me.userId}`);
+      if (!res.ok) throw new Error('Failed to load nurse patients: ' + res.status);
+      const patients = await res.json();
+      document.getElementById('outAssignments').textContent = show(patients);
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function loadAllPatients() {
+    try {
+      const res = await AppApi.apiGet('/api/assignments/active-patients');
+      if (!res.ok) throw new Error('Failed to load all patients: ' + res.status);
+      const patients = await res.json();
+      document.getElementById('outAssignments').textContent = show(patients);
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function loadDoctorPatients() {
+    try {
+      const me = await AppApi.getMe();
+      const res = await AppApi.apiGet(`/api/assignments/patients-by-doctor/${me.userId}`);
+      if (!res.ok) throw new Error('Failed to load doctor patients: ' + res.status);
+      const patients = await res.json();
+      document.getElementById('outAssignments').textContent = show(patients);
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function loadPatientsWithoutDoctor() {
+    try {
+      const res = await AppApi.apiGet('/api/assignments/patients-without-doctor');
+      if (!res.ok) throw new Error('Failed to load patients without doctor: ' + res.status);
+      const patients = await res.json();
+      document.getElementById('outAssignments').textContent = show(patients);
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function loadAssignmentData() {
+    try {
+      const [activePatientsRes, patientsWithoutDoctorRes] = await Promise.all([
+        AppApi.apiGet('/api/assignments/active-patients'),
+        AppApi.apiGet('/api/assignments/patients-without-doctor')
+      ]);
+      
+      const activePatients = activePatientsRes.ok ? await activePatientsRes.json() : [];
+      const patientsWithoutDoctor = patientsWithoutDoctorRes.ok ? await patientsWithoutDoctorRes.json() : [];
+      
+      document.getElementById('outAssignments').textContent = show({
+        activePatients: activePatients.length,
+        patientsWithoutDoctor: patientsWithoutDoctor.length,
+        activePatientsList: activePatients,
+        patientsWithoutDoctorList: patientsWithoutDoctor
+      });
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  }
+
+  // Event listeners for new buttons
+  document.getElementById('btnLoadActivePatients').addEventListener('click', async () => {
+    try {
+      const res = await AppApi.apiGet('/api/assignments/all-users');
+      if (!res.ok) throw new Error('Failed to load users: ' + res.status);
+      const users = await res.json();
+      document.getElementById('outAssignments').textContent = show(users);
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  });
+
+  document.getElementById('btnLoadPatientsWithoutDoctor').addEventListener('click', async () => {
+    try {
+      const res = await AppApi.apiGet('/api/assignments/patients-without-doctor');
+      if (!res.ok) throw new Error('Failed to load patients without doctor: ' + res.status);
+      const patients = await res.json();
+      document.getElementById('outAssignments').textContent = show(patients);
+    } catch (e) {
+      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+    }
+  });
+
+  // Автоматически загружаем профиль при загрузке страницы
+  window.addEventListener('load', async () => {
+    try {
+      const me = await AppApi.getMe();
+      document.getElementById('outMe').textContent = show(me);
+      
+      // Показываем админскую ссылку если пользователь админ
+      const adminLink = document.getElementById('adminLink');
+      if (me.role === 'ADMIN') {
+        adminLink.style.display = 'inline-block';
+      } else {
+        adminLink.style.display = 'none';
+      }
+      
+      // Setup role-based navigation
+      setupRoleNavigation(me);
+    } catch (e) {
+      document.getElementById('outMe').textContent = 'Error loading profile: ' + e.message;
+    }
+  });
+</script>
+</body>
+</html>
+
+

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Cabinet - Medical App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #0b1020; color: #e7ecf5; }
+    .wrap { min-height: 100vh; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:#121a33; border-bottom:1px solid #1f2a4a; }
+    .brand { font-weight: 600; }
+    .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+    .card { background:#121a33; border:1px solid #1f2a4a; border-radius:12px; padding:20px; }
+    .card h3 { margin: 0 0 16px; color: #9bb6ff; }
+    .btn { appearance:none; border:1px solid #2b3a63; background:#1a2444; color:#e7ecf5; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:600; margin: 4px; }
+    .btn:hover { background:#202c54; }
+    .btn.primary { background:#2c6bed; border-color:#2c6bed; }
+    .btn.primary:hover { background:#1f57c9; }
+    .btn.success { background:#10b981; border-color:#10b981; }
+    .btn.success:hover { background:#059669; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 8px; color: #a7b1c6; font-weight: 600; }
+    .form-group select, .form-group input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #1f2a4a; background: #0e1630; color: #e7ecf5; }
+    .info-card { background: #0e1630; border: 1px solid #1f2a4a; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .info-label { color: #a7b1c6; }
+    .info-value { color: #e7ecf5; font-weight: 600; }
+    pre { white-space: pre-wrap; word-break: break-word; background:#0e1630; border:1px solid #1f2a4a; padding:12px; border-radius:8px; max-height: 300px; overflow-y: auto; }
+    .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .status.assigned { background: #10b981; color: #000; }
+    .status.unassigned { background: #f59e0b; color: #000; }
+    a { color:#9bb6ff; text-decoration:none; }
+    .loading { opacity: 0.6; pointer-events: none; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">Patient Cabinet</div>
+    <div>
+      <a href="/dashboard" class="btn">Dashboard</a>
+      <button class="btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>My Information</h3>
+      <div class="info-card" id="patientInfo">
+        <div class="info-row">
+          <span class="info-label">Loading...</span>
+        </div>
+      </div>
+      <button class="btn primary" id="btnLoadInfo">Refresh Info</button>
+    </div>
+
+    <div class="card">
+      <h3>Assign Nurse</h3>
+      <div class="form-group">
+        <label for="nurseSelect">Select Nurse:</label>
+        <select id="nurseSelect">
+          <option value="">Loading nurses...</option>
+        </select>
+      </div>
+      <button class="btn primary" id="btnAssignNurse">Assign Nurse</button>
+      <pre id="outNurse">Click to assign nurse</pre>
+    </div>
+
+    <div class="card">
+      <h3>Available Doctors</h3>
+      <button class="btn primary" id="btnLoadDoctors">Load Doctors</button>
+      <pre id="outDoctors">Click to load available doctors</pre>
+    </div>
+
+    <div class="card">
+      <h3>Notifications</h3>
+      <button class="btn primary" id="btnLoadNotifications">Load Notifications</button>
+      <pre id="outNotifications">Click to load notifications</pre>
+    </div>
+
+    <div class="card">
+      <h3>Мониторинг показателей в реальном времени</h3>
+      <div class="info-card">
+        <div class="info-row">
+          <span class="info-label">Статус подключения:</span>
+          <span class="info-value" id="connection-status">Проверка...</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Статус мониторинга:</span>
+          <span class="info-value" id="monitoring-status">Остановлен</span>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 16px;">
+        <button class="btn primary" id="getIndicators">Get Indicators</button>
+        <button class="btn" id="stopMonitoring" style="display: none;">Stop</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+        <div class="info-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white;">
+          <div class="info-label">Пульс (ЧСС)</div>
+          <div style="font-size: 1.5rem; font-weight: bold;" id="heartrate-value">--</div>
+          <div class="info-label">уд/мин</div>
+        </div>
+        <div class="info-card" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); color: white;">
+          <div class="info-label">Температура</div>
+          <div style="font-size: 1.5rem; font-weight: bold;" id="temperature-value">--</div>
+          <div class="info-label">°C</div>
+        </div>
+        <div class="info-card" style="background: linear-gradient(135deg, #45b7d1 0%, #96c93d 100%); color: white;">
+          <div class="info-label">SpO2</div>
+          <div style="font-size: 1.5rem; font-weight: bold;" id="spo2-value">--</div>
+          <div class="info-label">%</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-row">
+          <span class="info-label">Общий статус:</span>
+          <span class="info-value" id="status-value">Норма</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Последнее обновление:</span>
+          <span class="info-value" id="timestamp-value">--</span>
+        </div>
+      </div>
+
+      <div id="alerts-container" style="margin-top: 16px;">
+        <div class="text-muted text-center">Нет активных уведомлений</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="/js/realtime-monitoring.js"></script>
+<script>
+  let currentPatientId = null;
+
+  function show(obj){ return JSON.stringify(obj, null, 2); }
+
+  function updatePatientInfo(patient) {
+    currentPatientId = patient.userId;
+    const infoCard = document.getElementById('patientInfo');
+    infoCard.innerHTML = `
+      <div class="info-row">
+        <span class="info-label">Name:</span>
+        <span class="info-value">${patient.firstName} ${patient.lastName}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Email:</span>
+        <span class="info-value">${patient.email}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Role:</span>
+        <span class="info-value">${patient.role}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Department:</span>
+        <span class="info-value">${patient.department ? patient.department.name : 'Not assigned'}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Assigned Nurse:</span>
+        <span class="info-value">${patient.assignedNurse ? patient.assignedNurse.firstName + ' ' + patient.assignedNurse.lastName : 'Not assigned'}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Assigned Doctor:</span>
+        <span class="info-value">${patient.assignedDoctor ? patient.assignedDoctor.firstName + ' ' + patient.assignedDoctor.lastName : 'Not assigned'}</span>
+      </div>
+    `;
+  }
+
+  async function loadNurses() {
+    try {
+      const res = await AppApi.apiGet('/api/patient-cabinet/available-nurses');
+      if (!res.ok) throw new Error('Failed to load nurses: ' + res.status);
+      const nurses = await res.json();
+      
+      const select = document.getElementById('nurseSelect');
+      select.innerHTML = '<option value="">Select a nurse...</option>';
+      nurses.forEach(nurse => {
+        const option = document.createElement('option');
+        option.value = nurse.userId;
+        option.textContent = `${nurse.firstName} ${nurse.lastName} (${nurse.email})`;
+        select.appendChild(option);
+      });
+    } catch (e) {
+      console.error('Error loading nurses:', e);
+    }
+  }
+
+
+  // Event Listeners
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await AppApi.logout();
+    window.location.href = '/signin';
+  });
+
+  document.getElementById('btnLoadInfo').addEventListener('click', async () => {
+    try {
+      const me = await AppApi.getMe();
+      updatePatientInfo(me);
+      document.getElementById('outNurse').textContent = 'Patient info loaded';
+    } catch (e) {
+      document.getElementById('outNurse').textContent = 'Error: ' + e.message;
+    }
+  });
+
+  document.getElementById('btnAssignNurse').addEventListener('click', async () => {
+    const nurseId = document.getElementById('nurseSelect').value;
+    if (!nurseId || !currentPatientId) {
+      document.getElementById('outNurse').textContent = 'Please select a nurse and ensure patient info is loaded';
+      return;
+    }
+
+    try {
+      const res = await AppApi.apiPost('/api/patient-cabinet/assign-nurse', {
+        patientId: currentPatientId,
+        nurseId: parseInt(nurseId)
+      });
+      if (!res.ok) throw new Error('Failed to assign nurse: ' + res.status);
+      const result = await res.json();
+      document.getElementById('outNurse').textContent = show(result);
+      
+      // Refresh patient info
+      const me = await AppApi.getMe();
+      updatePatientInfo(me);
+    } catch (e) {
+      document.getElementById('outNurse').textContent = 'Error: ' + e.message;
+    }
+  });
+
+
+  document.getElementById('btnLoadDoctors').addEventListener('click', async () => {
+    try {
+      const res = await AppApi.apiGet('/api/patient-cabinet/available-doctors');
+      if (!res.ok) throw new Error('Failed to load doctors: ' + res.status);
+      const doctors = await res.json();
+      document.getElementById('outDoctors').textContent = show(doctors);
+    } catch (e) {
+      document.getElementById('outDoctors').textContent = 'Error: ' + e.message;
+    }
+  });
+
+  document.getElementById('btnLoadNotifications').addEventListener('click', async () => {
+    if (!currentPatientId) {
+      document.getElementById('outNotifications').textContent = 'Please load patient info first';
+      return;
+    }
+
+    try {
+      const res = await AppApi.apiGet(`/api/notifications/nurse/${currentPatientId}`);
+      if (!res.ok) throw new Error('Failed to load notifications: ' + res.status);
+      const notifications = await res.json();
+      document.getElementById('outNotifications').textContent = show(notifications);
+    } catch (e) {
+      document.getElementById('outNotifications').textContent = 'Error: ' + e.message;
+    }
+  });
+
+  // Redirect to login if not logged in
+  if (!AppApi.isLoggedIn()) {
+    location.href = '/signin';
+  }
+
+
+  // Load initial data
+  window.addEventListener('load', async () => {
+    try {
+      const me = await AppApi.getMe();
+      updatePatientInfo(me);
+      await loadNurses();
+      
+      // Инициализируем мониторинг для пациента
+      if (me.userId) {
+        // Инициализируем мониторинг
+        if (typeof RealtimeMedicalMonitoring !== 'undefined') {
+          medicalMonitoring = new RealtimeMedicalMonitoring(me.userId);
+        }
+      }
+    } catch (e) {
+      console.error('Error loading initial data:', e);
+    }
+  });
+</script>
+</body>
+</html>
+

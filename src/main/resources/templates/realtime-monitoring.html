@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мониторинг показателей в реальном времени</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .indicator-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .indicator-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .indicator-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .status-normal { background-color: #28a745; }
+        .status-requires-attention { background-color: #ffc107; }
+        .status-critical { background-color: #dc3545; }
+        .status-incompatible-with-life { background-color: #6f42c1; }
+        
+        .connection-status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .status-connected {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .monitoring-controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-item {
+            background: #fff;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .alert-time {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .alert-category {
+            font-weight: bold;
+            color: #dc3545;
+        }
+        
+        .alert-message {
+            margin-top: 5px;
+        }
+        
+        .heartrate-card { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); }
+        .temperature-card { background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); }
+        .spo2-card { background: linear-gradient(135deg, #45b7d1 0%, #96c93d 100%); }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center my-4">Мониторинг медицинских показателей</h1>
+                
+                <div class="connection-status" id="connection-status">
+                    Статус подключения: <span id="connection-status">Проверка...</span>
+                </div>
+                
+                <div class="monitoring-controls">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Управление мониторингом</h5>
+                            <p>Статус мониторинга: <span id="monitoring-status">Остановлен</span></p>
+                            <p>ID пациента: <span id="patient-id">1001</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-success" id="startMonitoring">
+                                    <i class="fas fa-play"></i> Начать мониторинг
+                                </button>
+                                <button type="button" class="btn btn-danger" id="stopMonitoring">
+                                    <i class="fas fa-stop"></i> Остановить мониторинг
+                                </button>
+                                <button type="button" class="btn btn-warning" id="sendTestIndicators">
+                                    <i class="fas fa-flask"></i> Get Indicators
+                                </button>
+                                <button type="button" class="btn btn-info" id="reloadWebSocket">
+                                    <i class="fas fa-sync-alt"></i> Перезагрузить WebSocket
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="indicator-card heartrate-card">
+                    <div class="indicator-label">Пульс (ЧСС)</div>
+                    <div class="indicator-value" id="heartrate-value">--</div>
+                    <div class="indicator-label">уд/мин</div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="indicator-card temperature-card">
+                    <div class="indicator-label">Температура</div>
+                    <div class="indicator-value" id="temperature-value">--</div>
+                    <div class="indicator-label">°C</div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="indicator-card spo2-card">
+                    <div class="indicator-label">SpO2</div>
+                    <div class="indicator-value" id="spo2-value">--</div>
+                    <div class="indicator-label">%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Общий статус</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="status-indicator status-normal" id="status-indicator"></span>
+                            <div>
+                                <div class="fw-bold" id="status-value">Норма</div>
+                                <div class="text-muted" id="status-description">Все показатели в норме</div>
+                            </div>
+                        </div>
+                        <div class="text-muted">
+                            Последнее обновление: <span id="timestamp-value">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Активные уведомления</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="alerts-container">
+                            <div class="text-muted text-center">Нет активных уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="chart-container">
+                    <h5>График показателей</h5>
+                    <canvas id="indicatorsChart" width="400" height="200"></canvas>
+                    <div class="text-muted text-center mt-3">
+                        График будет отображаться после начала мониторинга
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>История уведомлений</h5>
+                    </div>
+                    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                        <div id="alert-history">
+                            <div class="text-muted text-center">История пуста</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="/js/realtime-monitoring.js"></script>
+    
+    <script>
+        // Инициализация графика
+        let indicatorsChart = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeChart();
+        });
+        
+        function initializeChart() {
+            const ctx = document.getElementById('indicatorsChart').getContext('2d');
+            
+            indicatorsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Пульс (уд/мин)',
+                        data: [],
+                        borderColor: '#ff6b6b',
+                        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Температура (°C)',
+                        data: [],
+                        borderColor: '#4ecdc4',
+                        backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'SpO2 (%)',
+                        data: [],
+                        borderColor: '#45b7d1',
+                        backgroundColor: 'rgba(69, 183, 209, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Переопределяем метод обновления графика
+        if (medicalMonitoring) {
+            medicalMonitoring.updateChart = function(indicators) {
+                if (!indicatorsChart) return;
+                
+                const now = new Date(indicators.timestamp).toLocaleTimeString();
+                
+                // Добавляем новые данные
+                indicatorsChart.data.labels.push(now);
+                indicatorsChart.data.datasets[0].data.push(indicators.heartrate);
+                indicatorsChart.data.datasets[1].data.push(indicators.temperature);
+                indicatorsChart.data.datasets[2].data.push(indicators.spo2);
+                
+                // Ограничиваем количество точек на графике
+                if (indicatorsChart.data.labels.length > 20) {
+                    indicatorsChart.data.labels.shift();
+                    indicatorsChart.data.datasets.forEach(dataset => {
+                        dataset.data.shift();
+                    });
+                }
+                
+                indicatorsChart.update('none');
+            };
+        }
+    </script>
+</body>
+</html>
+
+
