@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5438/
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+      show-sql: true
+  main:
+    allow-bean-definition-overriding: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db.migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    clean-disabled: true
+    out-of-order: true
+    placeholder-replacement: false
+
+server:
+  port: 8080
+
+jwt:
+  secret: mySuperSecretKeyForJWTGeneration2025
+  expiration: 86400000
+  refresh-expiration: 86400000
+
+bcrypt:
+  strength: 12
