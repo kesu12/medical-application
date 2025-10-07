@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - Medical App</title>
+  <title>Регистрация - Медицинское приложение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -25,36 +25,36 @@
 <body>
 <div class="wrap">
   <div class="card">
-    <h1 class="title">Create account</h1>
-    <p class="muted">Registers via /api/auth/register and auto logs in on success.</p>
+    <h1 class="title">Создать аккаунт</h1>
+    <p class="muted">Регистрация через /api/auth/register и автоматический вход при успехе.</p>
     <form id="registerForm" class="grid">
       <div class="field">
-        <label for="username">Username</label>
+        <label for="username">Имя пользователя</label>
         <input class="input" id="username" name="username" required>
       </div>
       <div class="field">
-        <label for="email">Email</label>
+        <label for="email">Электронная почта</label>
         <input class="input" id="email" type="email" name="email" required>
       </div>
       <div class="field">
-        <label for="firstName">First name</label>
+        <label for="firstName">Имя</label>
         <input class="input" id="firstName" name="firstName">
       </div>
       <div class="field">
-        <label for="lastName">Last name</label>
+        <label for="lastName">Фамилия</label>
         <input class="input" id="lastName" name="lastName">
       </div>
       <div class="field">
-        <label for="password">Password</label>
+        <label for="password">Пароль</label>
         <input class="input" id="password" type="password" name="password" required>
       </div>
       <div class="field">
-        <label for="confirmPassword">Confirm password</label>
+        <label for="confirmPassword">Подтвердить пароль</label>
         <input class="input" id="confirmPassword" type="password" name="confirmPassword" required>
       </div>
-      <button class="btn" type="submit">Register</button>
+      <button class="btn" type="submit">Зарегистрироваться</button>
       <div class="actions">
-        <a class="btn" style="flex:1; text-align:center; background:#1a2444;" href="/signin">Back to Sign in</a>
+        <a class="btn" style="flex:1; text-align:center; background:#1a2444;" href="/signin">Вернуться к входу</a>
       </div>
     </form>
   </div>
@@ -79,14 +79,14 @@
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) {
-        const message = data && (data.message || (data.errors && JSON.stringify(data.errors))) || 'Registration failed';
+        const message = data && (data.message || (data.errors && JSON.stringify(data.errors))) || 'Ошибка регистрации';
         throw new Error(message);
       }
       if (data && data.accessToken) {
         AppApi.setTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken, tokenType: data.tokenType });
         location.href = '/dashboard';
       } else {
-        alert('Unexpected response');
+        alert('Неожиданный ответ');
       }
     } catch (e) {
       alert(e.message);

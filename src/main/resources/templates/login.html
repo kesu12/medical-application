@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Medical App</title>
+    <title>Вход - Медицинское приложение</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -24,23 +24,23 @@
 <body>
 <div class="wrap">
   <div class="card">
-    <h1 class="title">Sign in</h1>
-    <p class="muted">This does not perform Spring Security form login; it calls the JSON auth API and saves the JWT.</p>
+    <h1 class="title">Вход в систему</h1>
+    <p class="muted">Это не выполняет Spring Security form login; он вызывает JSON auth API и сохраняет JWT токен.</p>
     <form id="loginForm">
       <div class="field">
-        <label for="username">Username</label>
+        <label for="username">Имя пользователя</label>
         <input class="input" id="username" name="username" required>
       </div>
       <div class="field">
-        <label for="password">Password</label>
+        <label for="password">Пароль</label>
         <input class="input" id="password" type="password" name="password" required>
       </div>
-      <button class="btn" type="submit">Login</button>
+      <button class="btn" type="submit">Войти</button>
     </form>
     <div style="margin-top: 16px; text-align: center;">
-      <a href="/register" class="btn" style="background: #1a2444; text-decoration: none; display: inline-block; width: auto; padding: 8px 16px;">Register</a>
+      <a href="/register" class="btn" style="background: #1a2444; text-decoration: none; display: inline-block; width: auto; padding: 8px 16px;">Регистрация</a>
     </div>
-    <div class="hint">Token will be stored in localStorage as <code>jwt</code>.</div>
+    <div class="hint">Токен будет сохранен в localStorage как <code>jwt</code>.</div>
   </div>
 </div>
 
@@ -58,7 +58,7 @@
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) {
-        const message = data && data.message ? data.message : 'Login failed';
+        const message = data && data.message ? data.message : 'Ошибка входа';
         throw new Error(message);
       }
       if (data && data.accessToken) {
@@ -71,10 +71,10 @@
         }
     window.location.href = '/dashboard';
       } else {
-        alert('Unexpected response');
+        alert('Неожиданный ответ');
       }
     } catch (err) {
-      alert(err.message || 'Login error');
+      alert(err.message || 'Ошибка входа');
     }
   });
 </script>

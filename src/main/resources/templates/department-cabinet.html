@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Department Cabinet - Medical App</title>
+  <title>Кабинет отдела - Медицинское приложение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -59,110 +59,110 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div class="brand">Department Cabinet</div>
+    <div class="brand">Кабинет отдела</div>
     <div>
-      <a href="/dashboard" class="btn">Dashboard</a>
-      <button class="btn" id="logoutBtn">Logout</button>
+      <a href="/dashboard" class="btn">Панель управления</a>
+      <button class="btn" id="logoutBtn">Выйти</button>
     </div>
   </div>
 
   <div class="container">
     <div class="card">
-      <h3>Select Department</h3>
+      <h3>Выберите отдел</h3>
       <div class="form-group">
-        <label for="departmentSelect">Choose Department:</label>
+        <label for="departmentSelect">Выберите отдел:</label>
         <select id="departmentSelect">
-          <option value="">Loading departments...</option>
+          <option value="">Загрузка отделов...</option>
         </select>
       </div>
-      <button class="btn primary" id="btnLoadDepartment">Load Department Data</button>
+      <button class="btn primary" id="btnLoadDepartment">Загрузить данные отдела</button>
     </div>
 
     <div class="card" id="departmentInfoCard" style="display: none;">
-      <h3>Department Information</h3>
+      <h3>Информация об отделе</h3>
       <div class="info-card" id="departmentInfo">
         <div class="info-row">
-          <span class="info-label">Loading...</span>
+          <span class="info-label">Загрузка...</span>
         </div>
       </div>
     </div>
 
     <div class="card" id="departmentStatsCard" style="display: none;">
-      <h3>Department Statistics</h3>
+      <h3>Статистика отдела</h3>
       <div class="stats-grid" id="departmentStats">
         <div class="stat-card">
           <div class="stat-number" id="patientsCount">-</div>
-          <div class="stat-label">Patients</div>
+          <div class="stat-label">Пациенты</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="nursesCount">-</div>
-          <div class="stat-label">Nurses</div>
+          <div class="stat-label">Медсестры</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="doctorsCount">-</div>
-          <div class="stat-label">Doctors</div>
+          <div class="stat-label">Врачи</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="unassignedCount">-</div>
-          <div class="stat-label">Unassigned</div>
+          <div class="stat-label">Неназначенные</div>
         </div>
       </div>
     </div>
 
     <div class="card" id="departmentPatientsCard" style="display: none;">
-      <h3>Department Patients</h3>
-      <button class="btn primary" id="btnLoadPatients">Load Patients</button>
+      <h3>Пациенты отдела</h3>
+      <button class="btn primary" id="btnLoadPatients">Загрузить пациентов</button>
       <div class="person-list" id="patientsList">
         <div class="person-item">
-          <div class="person-name">Click "Load Patients" to see department patients</div>
+          <div class="person-name">Нажмите "Загрузить пациентов" чтобы увидеть пациентов отдела</div>
         </div>
       </div>
     </div>
 
     <div class="card" id="departmentNursesCard" style="display: none;">
-      <h3>Department Nurses</h3>
-      <button class="btn primary" id="btnLoadNurses">Load Nurses</button>
+      <h3>Медсестры отдела</h3>
+      <button class="btn primary" id="btnLoadNurses">Загрузить медсестер</button>
       <div class="person-list" id="nursesList">
         <div class="person-item">
-          <div class="person-name">Click "Load Nurses" to see department nurses</div>
+          <div class="person-name">Нажмите "Загрузить медсестер" чтобы увидеть медсестер отдела</div>
         </div>
       </div>
     </div>
 
     <div class="card" id="departmentDoctorsCard" style="display: none;">
-      <h3>Department Doctors</h3>
-      <button class="btn primary" id="btnLoadDoctors">Load Doctors</button>
+      <h3>Врачи отдела</h3>
+      <button class="btn primary" id="btnLoadDoctors">Загрузить врачей</button>
       <div class="person-list" id="doctorsList">
         <div class="person-item">
-          <div class="person-name">Click "Load Doctors" to see department doctors</div>
+          <div class="person-name">Нажмите "Загрузить врачей" чтобы увидеть врачей отдела</div>
         </div>
       </div>
     </div>
 
     <div class="card" id="assignmentCard" style="display: none;">
-      <h3>Assign Doctor to Patient</h3>
+      <h3>Назначить врача пациенту</h3>
       <div class="form-group">
-        <label for="patientSelect">Select Patient:</label>
+        <label for="patientSelect">Выберите пациента:</label>
         <select id="patientSelect">
-          <option value="">Loading patients...</option>
+          <option value="">Загрузка пациентов...</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="doctorSelect">Select Doctor:</label>
+        <label for="doctorSelect">Выберите врача:</label>
         <select id="doctorSelect">
-          <option value="">Loading doctors...</option>
+          <option value="">Загрузка врачей...</option>
         </select>
       </div>
-      <button class="btn success" id="btnAssignDoctor">Assign Doctor</button>
-      <pre id="outAssignment">Click to assign doctor</pre>
+      <button class="btn success" id="btnAssignDoctor">Назначить врача</button>
+      <pre id="outAssignment">Нажмите чтобы назначить врача</pre>
     </div>
 
     <div class="card" id="notificationsCard" style="display: none;">
-      <h3>Department Notifications</h3>
-      <button class="btn primary" id="btnLoadNotifications">Load Notifications</button>
+      <h3>Уведомления отдела</h3>
+      <button class="btn primary" id="btnLoadNotifications">Загрузить уведомления</button>
       <div id="notificationsList">
         <div class="notification-item">
-          <div class="notification-message">Click "Load Notifications" to see department notifications</div>
+          <div class="notification-message">Нажмите "Загрузить уведомления" чтобы увидеть уведомления отдела</div>
         </div>
       </div>
     </div>
@@ -181,15 +181,15 @@
     const infoCard = document.getElementById('departmentInfo');
     infoCard.innerHTML = `
       <div class="info-row">
-        <span class="info-label">Name:</span>
+        <span class="info-label">Название:</span>
         <span class="info-value">${department.name}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Description:</span>
-        <span class="info-value">${department.description || 'No description'}</span>
+        <span class="info-label">Описание:</span>
+        <span class="info-value">${department.description || 'Без описания'}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Created:</span>
+        <span class="info-label">Создан:</span>
         <span class="info-value">${new Date(department.createdAt).toLocaleDateString()}</span>
       </div>
     `;
@@ -198,7 +198,7 @@
   function displayPeople(people, containerId, role) {
     const container = document.getElementById(containerId);
     if (people.length === 0) {
-      container.innerHTML = '<div class="person-item"><div class="person-name">No people found</div></div>';
+      container.innerHTML = '<div class="person-item"><div class="person-name">Люди не найдены</div></div>';
       return;
     }
 
@@ -210,9 +210,9 @@
         </div>
         <div class="person-info">
           Email: ${person.email}<br>
-          Status: <span class="status ${person.confirmed ? 'assigned' : 'unassigned'}">${person.confirmed ? 'Active' : 'Inactive'}</span>
-          ${role === 'PATIENT' ? `<br>Doctor: ${person.assignedDoctor ? person.assignedDoctor.firstName + ' ' + person.assignedDoctor.lastName : 'Not assigned'}` : ''}
-          ${role === 'PATIENT' ? `<br>Nurse: ${person.assignedNurse ? person.assignedNurse.firstName + ' ' + person.assignedNurse.lastName : 'Not assigned'}` : ''}
+          Статус: <span class="status ${person.confirmed ? 'assigned' : 'unassigned'}">${person.confirmed ? 'Активен' : 'Неактивен'}</span>
+          ${role === 'PATIENT' ? `<br>Врач: ${person.assignedDoctor ? person.assignedDoctor.firstName + ' ' + person.assignedDoctor.lastName : 'Не назначен'}` : ''}
+          ${role === 'PATIENT' ? `<br>Медсестра: ${person.assignedNurse ? person.assignedNurse.firstName + ' ' + person.assignedNurse.lastName : 'Не назначена'}` : ''}
         </div>
       </div>
     `).join('');
@@ -221,7 +221,7 @@
   function displayNotifications(notifications) {
     const container = document.getElementById('notificationsList');
     if (notifications.length === 0) {
-      container.innerHTML = '<div class="notification-item"><div class="notification-message">No notifications</div></div>';
+      container.innerHTML = '<div class="notification-item"><div class="notification-message">Нет уведомлений</div></div>';
       return;
     }
 
@@ -229,9 +229,9 @@
       <div class="notification-item ${notification.type === 'PATIENT_WITHOUT_DOCTOR' ? 'urgent' : ''}">
         <div class="notification-message">${notification.message}</div>
         <div class="notification-details">
-          Patient: ${notification.patientName}<br>
-          Department: ${notification.departmentName}<br>
-          Type: ${notification.type}
+          Пациент: ${notification.patientName}<br>
+          Отдел: ${notification.departmentName}<br>
+          Тип: ${notification.type}
         </div>
       </div>
     `).join('');
@@ -254,11 +254,11 @@
       const departments = await res.json();
       
       const select = document.getElementById('departmentSelect');
-      select.innerHTML = '<option value="">Select a department...</option>';
+      select.innerHTML = '<option value="">Выберите отдел...</option>';
       departments.forEach(dept => {
         const option = document.createElement('option');
         option.value = dept.id;
-        option.textContent = `${dept.name} - ${dept.description || 'No description'}`;
+        option.textContent = `${dept.name} - ${dept.description || 'Без описания'}`;
         select.appendChild(option);
       });
     } catch (e) {
@@ -286,7 +286,7 @@
         
         // Update patient select
         const patientSelect = document.getElementById('patientSelect');
-        patientSelect.innerHTML = '<option value="">Select a patient...</option>';
+        patientSelect.innerHTML = '<option value="">Выберите пациента...</option>';
         patients.forEach(patient => {
           const option = document.createElement('option');
           option.value = patient.userId;
@@ -312,7 +312,7 @@
         
         // Update doctor select
         const doctorSelect = document.getElementById('doctorSelect');
-        doctorSelect.innerHTML = '<option value="">Select a doctor...</option>';
+        doctorSelect.innerHTML = '<option value="">Выберите врача...</option>';
         doctors.forEach(doctor => {
           const option = document.createElement('option');
           option.value = doctor.userId;
@@ -343,7 +343,7 @@
   document.getElementById('btnLoadDepartment').addEventListener('click', async () => {
     const departmentId = document.getElementById('departmentSelect').value;
     if (!departmentId) {
-      alert('Please select a department');
+      alert('Пожалуйста, выберите отдел');
       return;
     }
     
@@ -372,7 +372,7 @@
     const doctorId = document.getElementById('doctorSelect').value;
     
     if (!patientId || !doctorId) {
-      document.getElementById('outAssignment').textContent = 'Please select both patient and doctor';
+      document.getElementById('outAssignment').textContent = 'Пожалуйста, выберите пациента и врача';
       return;
     }
 
@@ -388,7 +388,7 @@
       // Refresh department data
       await loadDepartmentData();
     } catch (e) {
-      document.getElementById('outAssignment').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignment').textContent = 'Ошибка: ' + e.message;
     }
   });
 

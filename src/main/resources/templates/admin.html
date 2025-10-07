@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Medical App</title>
+  <title>Админ панель - Медицинское приложение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -24,80 +24,80 @@
 </head>
 <body>
 <div class="topbar">
-  <div>Admin Panel</div>
+  <div>Админ панель</div>
   <div>
-    <a class="btn" href="/">Home</a>
-    <a class="btn" href="/register">Register</a>
-    <a class="btn" href="/dashboard">Dashboard</a>
-    <a class="btn" href="/assignment-admin">Assignment Management</a>
-    <button class="btn" id="logoutBtn">Logout</button>
+    <a class="btn" href="/">Главная</a>
+    <a class="btn" href="/register">Регистрация</a>
+    <a class="btn" href="/dashboard">Панель управления</a>
+    <a class="btn" href="/assignment-admin">Управление назначениями</a>
+    <button class="btn" id="logoutBtn">Выйти</button>
   </div>
   </div>
 <div class="container">
   <div class="grid">
     <div class="card">
-      <h3>Users</h3>
+      <h3>Пользователи</h3>
       <div class="fields">
-        <input id="userId" placeholder="User ID" style="width:120px;">
+        <input id="userId" placeholder="ID пользователя" style="width:120px;">
         <select id="role">
           <option>DEFAULT</option>
           <option>DOCTOR</option>
           <option>NURSE</option>
         </select>
-        <button class="btn" id="btnRole">Set role</button>
-        <button class="btn" id="btnActivate">Activate</button>
-        <button class="btn" id="btnDeactivate">Deactivate</button>
-        <button class="btn" id="btnDelete">Delete</button>
+        <button class="btn" id="btnRole">Установить роль</button>
+        <button class="btn" id="btnActivate">Активировать</button>
+        <button class="btn" id="btnDeactivate">Деактивировать</button>
+        <button class="btn" id="btnDelete">Удалить</button>
       </div>
       <div class="fields">
-        <button class="btn primary" id="btnListUnconfirmed">List unconfirmed</button>
-        <button class="btn primary" id="btnListDefault">Load all DEFAULT users</button>
+        <button class="btn primary" id="btnListUnconfirmed">Список неподтвержденных</button>
+        <button class="btn primary" id="btnListDefault">Загрузить всех DEFAULT пользователей</button>
       </div>
-      <pre id="usersOut" class="muted">Output...</pre>
+      <pre id="usersOut" class="muted">Результат...</pre>
     </div>
 
     <div class="card">
-      <h3>Departments</h3>
+      <h3>Отделы</h3>
       <div class="fields">
         <input id="depId" placeholder="ID" style="width:120px;">
-        <input id="depName" placeholder="Name">
-        <input id="depDesc" placeholder="Description">
+        <input id="depName" placeholder="Название">
+        <input id="depDesc" placeholder="Описание">
       </div>
       <div class="fields">
-        <button class="btn primary" id="btnDepCreate">Create</button>
-        <button class="btn" id="btnDepUpdate">Update</button>
-        <button class="btn" id="btnDepDelete">Delete</button>
+        <button class="btn primary" id="btnDepCreate">Создать</button>
+        <button class="btn" id="btnDepUpdate">Обновить</button>
+        <button class="btn" id="btnDepDelete">Удалить</button>
       </div>
       <div class="fields">
-        <button class="btn" id="btnDepList">List all</button>
+        <button class="btn" id="btnDepList">Список всех</button>
       </div>
-      <pre id="depsOut" class="muted">Output...</pre>
+      <pre id="depsOut" class="muted">Результат...</pre>
     </div>
   </div>
 
   <div class="grid" style="margin-top: 20px;">
     <div class="card">
-      <h3>Doctor Department Assignment</h3>
+      <h3>Назначение врача в отдел</h3>
       <div class="fields">
-        <input id="doctorId" placeholder="Doctor ID" style="width:120px;">
-        <input id="departmentId" placeholder="Department ID" style="width:120px;">
-        <button class="btn primary" id="btnAssignDepartment">Assign Department</button>
+        <input id="doctorId" placeholder="ID врача" style="width:120px;">
+        <input id="departmentId" placeholder="ID отдела" style="width:120px;">
+        <button class="btn primary" id="btnAssignDepartment">Назначить отдел</button>
       </div>
       <div class="fields">
-        <button class="btn" id="btnListDoctors">List all doctors</button>
-        <button class="btn" id="btnListDepartments">List all departments</button>
+        <button class="btn" id="btnListDoctors">Список всех врачей</button>
+        <button class="btn" id="btnListDepartments">Список всех отделов</button>
       </div>
-      <pre id="assignmentOut" class="muted">Output...</pre>
+      <pre id="assignmentOut" class="muted">Результат...</pre>
     </div>
 
     <div class="card">
-      <h3>User Management</h3>
+      <h3>Управление пользователями</h3>
       <div class="fields">
-        <button class="btn" id="btnListAllUsers">List all users</button>
-        <button class="btn" id="btnListConfirmed">List confirmed users</button>
+        <button class="btn" id="btnListAllUsers">Список всех пользователей</button>
+        <button class="btn" id="btnListConfirmed">Список подтвержденных пользователей</button>
       </div>
       <div class="fields">
-        <button class="btn" id="btnListByRole">List by role</button>
+        <button class="btn" id="btnListByRole">Список по роли</button>
         <select id="roleFilter">
           <option value="DOCTOR">DOCTOR</option>
           <option value="NURSE">NURSE</option>
@@ -105,7 +105,7 @@
           <option value="DEFAULT">DEFAULT</option>
         </select>
       </div>
-      <pre id="userManagementOut" class="muted">Output...</pre>
+      <pre id="userManagementOut" class="muted">Результат...</pre>
     </div>
   </div>
 </div>
@@ -120,54 +120,54 @@
   // Users
   document.getElementById('btnListUnconfirmed').onclick = async () => {
     const res = await AppApi.apiGet('/api/admin/users/unconfirmed');
-    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnListDefault').onclick = async () => {
     const res = await AppApi.apiGet('/api/admin/users/by-role/DEFAULT');
-    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnRole').onclick = async () => {
     const id = document.getElementById('userId').value; const role = document.getElementById('role').value;
     const res = await AppApi.apiPatch(`/api/admin/users/${id}/role/${role}`);
-    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnActivate').onclick = async () => {
     const id = document.getElementById('userId').value;
     const res = await AppApi.apiPatch(`/api/admin/users/${id}/activate`);
-    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnDeactivate').onclick = async () => {
     const id = document.getElementById('userId').value;
     const res = await AppApi.apiPatch(`/api/admin/users/${id}/deactivate`);
-    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('usersOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnDelete').onclick = async () => {
     const id = document.getElementById('userId').value;
-    if (!confirm('Are you sure you want to delete user #' + id + '?')) return;
+    if (!confirm('Вы уверены, что хотите удалить пользователя #' + id + '?')) return;
     const res = await AppApi.apiDelete(`/api/admin/users/${id}`);
-    document.getElementById('usersOut').textContent = res.ok ? 'Deleted' : 'Failed: ' + res.status;
+    document.getElementById('usersOut').textContent = res.ok ? 'Удалено' : 'Ошибка: ' + res.status;
   };
 
   // Departments
   document.getElementById('btnDepCreate').onclick = async () => {
     const name = document.getElementById('depName').value; const description = document.getElementById('depDesc').value || null;
     const res = await AppApi.apiPost('/api/admin/department/add', { name, description });
-    document.getElementById('depsOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('depsOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnDepUpdate').onclick = async () => {
     const id = document.getElementById('depId').value; const name = document.getElementById('depName').value || null; const description = document.getElementById('depDesc').value || null;
     const res = await AppApi.apiPatch(`/api/admin/department/${id}`, { name, description });
-    document.getElementById('depsOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('depsOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnDepDelete').onclick = async () => {
     const id = document.getElementById('depId').value;
-    if (!confirm('Confirm delete department #' + id + '?')) return;
+    if (!confirm('Подтвердите удаление отдела #' + id + '?')) return;
     const res = await AppApi.apiDelete(`/api/admin/department/${id}`);
-    document.getElementById('depsOut').textContent = res.ok ? 'Deleted' : 'Failed: ' + res.status;
+    document.getElementById('depsOut').textContent = res.ok ? 'Удалено' : 'Ошибка: ' + res.status;
   };
   document.getElementById('btnDepList').onclick = async () => {
     const res = await AppApi.apiGet('/api/admin/department/all');
-    document.getElementById('depsOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('depsOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
 
   // Doctor Department Assignment
@@ -176,39 +176,39 @@
     const departmentId = document.getElementById('departmentId').value;
     
     if (!doctorId || !departmentId) {
-      document.getElementById('assignmentOut').textContent = 'Please enter both Doctor ID and Department ID';
+      document.getElementById('assignmentOut').textContent = 'Пожалуйста, введите ID врача и ID отдела';
       return;
     }
     
     const res = await AppApi.apiPatch(`/api/admin/users/${doctorId}/assign-department`, { departmentId: parseInt(departmentId) });
-    document.getElementById('assignmentOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('assignmentOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
 
   document.getElementById('btnListDoctors').onclick = async () => {
     const res = await AppApi.apiGet('/api/admin/users/by-role/DOCTOR');
-    document.getElementById('assignmentOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('assignmentOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
 
   document.getElementById('btnListDepartments').onclick = async () => {
     const res = await AppApi.apiGet('/api/admin/department/all');
-    document.getElementById('assignmentOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('assignmentOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
 
   // User Management
   document.getElementById('btnListAllUsers').onclick = async () => {
     const res = await AppApi.apiGet('/api/admin/users');
-    document.getElementById('userManagementOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('userManagementOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
 
   document.getElementById('btnListConfirmed').onclick = async () => {
     const res = await AppApi.apiGet('/api/admin/users/confirmed');
-    document.getElementById('userManagementOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('userManagementOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
 
   document.getElementById('btnListByRole').onclick = async () => {
     const role = document.getElementById('roleFilter').value;
     const res = await AppApi.apiGet(`/api/admin/users/by-role/${role}`);
-    document.getElementById('userManagementOut').textContent = res.ok ? show(await res.json()) : 'Failed: ' + res.status;
+    document.getElementById('userManagementOut').textContent = res.ok ? show(await res.json()) : 'Ошибка: ' + res.status;
   };
 </script>
 </body>

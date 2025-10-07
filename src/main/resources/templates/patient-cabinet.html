@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patient Cabinet - Medical App</title>
+  <title>Кабинет пациента - Медицинское приложение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -40,46 +40,46 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div class="brand">Patient Cabinet</div>
+    <div class="brand">Кабинет пациента</div>
     <div>
-      <a href="/dashboard" class="btn">Dashboard</a>
-      <button class="btn" id="logoutBtn">Logout</button>
+      <a href="/dashboard" class="btn">Панель управления</a>
+      <button class="btn" id="logoutBtn">Выйти</button>
     </div>
   </div>
 
   <div class="container">
     <div class="card">
-      <h3>My Information</h3>
+      <h3>Моя информация</h3>
       <div class="info-card" id="patientInfo">
         <div class="info-row">
-          <span class="info-label">Loading...</span>
+          <span class="info-label">Загрузка...</span>
         </div>
       </div>
-      <button class="btn primary" id="btnLoadInfo">Refresh Info</button>
+      <button class="btn primary" id="btnLoadInfo">Обновить информацию</button>
     </div>
 
     <div class="card">
-      <h3>Assign Nurse</h3>
+      <h3>Назначить медсестру</h3>
       <div class="form-group">
-        <label for="nurseSelect">Select Nurse:</label>
+        <label for="nurseSelect">Выберите медсестру:</label>
         <select id="nurseSelect">
-          <option value="">Loading nurses...</option>
+          <option value="">Загрузка медсестер...</option>
         </select>
       </div>
-      <button class="btn primary" id="btnAssignNurse">Assign Nurse</button>
-      <pre id="outNurse">Click to assign nurse</pre>
+      <button class="btn primary" id="btnAssignNurse">Назначить медсестру</button>
+      <pre id="outNurse">Нажмите чтобы назначить медсестру</pre>
     </div>
 
     <div class="card">
-      <h3>Available Doctors</h3>
-      <button class="btn primary" id="btnLoadDoctors">Load Doctors</button>
-      <pre id="outDoctors">Click to load available doctors</pre>
+      <h3>Доступные врачи</h3>
+      <button class="btn primary" id="btnLoadDoctors">Загрузить врачей</button>
+      <pre id="outDoctors">Нажмите чтобы загрузить доступных врачей</pre>
     </div>
 
     <div class="card">
-      <h3>Notifications</h3>
-      <button class="btn primary" id="btnLoadNotifications">Load Notifications</button>
-      <pre id="outNotifications">Click to load notifications</pre>
+      <h3>Уведомления</h3>
+      <button class="btn primary" id="btnLoadNotifications">Загрузить уведомления</button>
+      <pre id="outNotifications">Нажмите чтобы загрузить уведомления</pre>
     </div>
 
     <div class="card">
@@ -150,7 +150,7 @@
     const infoCard = document.getElementById('patientInfo');
     infoCard.innerHTML = `
       <div class="info-row">
-        <span class="info-label">Name:</span>
+        <span class="info-label">Имя:</span>
         <span class="info-value">${patient.firstName} ${patient.lastName}</span>
       </div>
       <div class="info-row">
@@ -158,20 +158,20 @@
         <span class="info-value">${patient.email}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Role:</span>
+        <span class="info-label">Роль:</span>
         <span class="info-value">${patient.role}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Department:</span>
-        <span class="info-value">${patient.department ? patient.department.name : 'Not assigned'}</span>
+        <span class="info-label">Отдел:</span>
+        <span class="info-value">${patient.department ? patient.department.name : 'Не назначен'}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Assigned Nurse:</span>
-        <span class="info-value">${patient.assignedNurse ? patient.assignedNurse.firstName + ' ' + patient.assignedNurse.lastName : 'Not assigned'}</span>
+        <span class="info-label">Назначенная медсестра:</span>
+        <span class="info-value">${patient.assignedNurse ? patient.assignedNurse.firstName + ' ' + patient.assignedNurse.lastName : 'Не назначена'}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Assigned Doctor:</span>
-        <span class="info-value">${patient.assignedDoctor ? patient.assignedDoctor.firstName + ' ' + patient.assignedDoctor.lastName : 'Not assigned'}</span>
+        <span class="info-label">Назначенный врач:</span>
+        <span class="info-value">${patient.assignedDoctor ? patient.assignedDoctor.firstName + ' ' + patient.assignedDoctor.lastName : 'Не назначен'}</span>
       </div>
     `;
   }
@@ -183,7 +183,7 @@
       const nurses = await res.json();
       
       const select = document.getElementById('nurseSelect');
-      select.innerHTML = '<option value="">Select a nurse...</option>';
+      select.innerHTML = '<option value="">Выберите медсестру...</option>';
       nurses.forEach(nurse => {
         const option = document.createElement('option');
         option.value = nurse.userId;
@@ -206,16 +206,16 @@
     try {
       const me = await AppApi.getMe();
       updatePatientInfo(me);
-      document.getElementById('outNurse').textContent = 'Patient info loaded';
+      document.getElementById('outNurse').textContent = 'Информация о пациенте загружена';
     } catch (e) {
-      document.getElementById('outNurse').textContent = 'Error: ' + e.message;
+      document.getElementById('outNurse').textContent = 'Ошибка: ' + e.message;
     }
   });
 
   document.getElementById('btnAssignNurse').addEventListener('click', async () => {
     const nurseId = document.getElementById('nurseSelect').value;
     if (!nurseId || !currentPatientId) {
-      document.getElementById('outNurse').textContent = 'Please select a nurse and ensure patient info is loaded';
+      document.getElementById('outNurse').textContent = 'Пожалуйста, выберите медсестру и убедитесь, что информация о пациенте загружена';
       return;
     }
 
@@ -232,7 +232,7 @@
       const me = await AppApi.getMe();
       updatePatientInfo(me);
     } catch (e) {
-      document.getElementById('outNurse').textContent = 'Error: ' + e.message;
+      document.getElementById('outNurse').textContent = 'Ошибка: ' + e.message;
     }
   });
 
@@ -244,13 +244,13 @@
       const doctors = await res.json();
       document.getElementById('outDoctors').textContent = show(doctors);
     } catch (e) {
-      document.getElementById('outDoctors').textContent = 'Error: ' + e.message;
+      document.getElementById('outDoctors').textContent = 'Ошибка: ' + e.message;
     }
   });
 
   document.getElementById('btnLoadNotifications').addEventListener('click', async () => {
     if (!currentPatientId) {
-      document.getElementById('outNotifications').textContent = 'Please load patient info first';
+      document.getElementById('outNotifications').textContent = 'Пожалуйста, сначала загрузите информацию о пациенте';
       return;
     }
 
@@ -260,7 +260,7 @@
       const notifications = await res.json();
       document.getElementById('outNotifications').textContent = show(notifications);
     } catch (e) {
-      document.getElementById('outNotifications').textContent = 'Error: ' + e.message;
+      document.getElementById('outNotifications').textContent = 'Ошибка: ' + e.message;
     }
   });
 

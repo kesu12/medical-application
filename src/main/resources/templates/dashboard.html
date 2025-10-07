@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Medical App</title>
+  <title>Панель управления - Медицинское приложение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -24,50 +24,50 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div class="brand">Dashboard</div>
+    <div class="brand">Панель управления</div>
     <div>
-      <a href="/" class="btn">Home</a>
-      <a href="/register" class="btn">Register</a>
-      <a href="/admin" class="btn" id="adminLink" style="display: none;">Admin Panel</a>
-      <button class="btn" id="logoutBtn">Logout</button>
+      <a href="/" class="btn">Главная</a>
+      <a href="/register" class="btn">Регистрация</a>
+      <a href="/admin" class="btn" id="adminLink" style="display: none;">Админ панель</a>
+      <button class="btn" id="logoutBtn">Выйти</button>
     </div>
   </div>
 
   <div class="container">
     <div class="card" id="roleNavigation" style="display: none;">
-      <h3>Role-based Access</h3>
+      <h3>Доступ на основе ролей</h3>
       <div id="roleButtons">
       </div>
     </div>
 
     <div class="grid">
       <div class="card">
-        <h3>Profile (/api/auth/me)</h3>
-        <button class="btn primary" id="btnMe">Load profile</button>
-        <pre id="outMe">Click to load</pre>
+        <h3>Профиль (/api/auth/me)</h3>
+        <button class="btn primary" id="btnMe">Загрузить профиль</button>
+        <pre id="outMe">Нажмите для загрузки</pre>
       </div>
 
       <div class="card">
-        <h3>Unconfirmed users (ADMIN) (/api/admin/users/unconfirmed)</h3>
-        <button class="btn primary" id="btnUnconfirmed">Load</button>
-        <pre id="outUnconfirmed">Requires ADMIN</pre>
+        <h3>Неподтвержденные пользователи (ADMIN) (/api/admin/users/unconfirmed)</h3>
+        <button class="btn primary" id="btnUnconfirmed">Загрузить</button>
+        <pre id="outUnconfirmed">Требует права ADMIN</pre>
       </div>
 
       <div class="card">
-        <h3>Departments</h3>
+        <h3>Отделы</h3>
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
-          <input id="depName" placeholder="Name" style="flex:1; padding:8px; border-radius:8px; border:1px solid #1f2a4a; background:#0e1630; color:#e7ecf5;">
-          <input id="depDesc" placeholder="Description" style="flex:1; padding:8px; border-radius:8px; border:1px solid #1f2a4a; background:#0e1630; color:#e7ecf5;">
-          <button class="btn primary" id="btnCreateDep">Create</button>
+          <input id="depName" placeholder="Название" style="flex:1; padding:8px; border-radius:8px; border:1px solid #1f2a4a; background:#0e1630; color:#e7ecf5;">
+          <input id="depDesc" placeholder="Описание" style="flex:1; padding:8px; border-radius:8px; border:1px solid #1f2a4a; background:#0e1630; color:#e7ecf5;">
+          <button class="btn primary" id="btnCreateDep">Создать</button>
         </div>
-        <pre id="outDep">Fill and click Create</pre>
+        <pre id="outDep">Заполните и нажмите Создать</pre>
       </div>
 
       <div class="card">
-        <h3>Assignment Management</h3>
-        <button class="btn primary" id="btnLoadActivePatients">Load Active Patients</button>
-        <button class="btn primary" id="btnLoadPatientsWithoutDoctor">Load Patients Without Doctor</button>
-        <pre id="outAssignments">Click to load assignment data</pre>
+        <h3>Управление назначениями</h3>
+        <button class="btn primary" id="btnLoadActivePatients">Загрузить активных пациентов</button>
+        <button class="btn primary" id="btnLoadPatientsWithoutDoctor">Загрузить пациентов без врача</button>
+        <pre id="outAssignments">Нажмите для загрузки данных о назначениях</pre>
       </div>
     </div>
   </div>
@@ -139,30 +139,30 @@
     
     // Common buttons for all roles
     const commonButtons = [
-      { text: 'View Profile', href: '#', action: () => document.getElementById('btnMe').click() }
+      { text: 'Просмотр профиля', href: '#', action: () => document.getElementById('btnMe').click() }
     ];
     
     // Role-specific buttons
     const roleSpecificButtons = {
       'PATIENT': [
-        { text: 'Patient Cabinet', href: '/patient-cabinet', class: 'btn primary' },
-        { text: 'My Assignments', href: '#', action: () => loadPatientAssignments() }
+        { text: 'Кабинет пациента', href: '/patient-cabinet', class: 'btn primary' },
+        { text: 'Мои назначения', href: '#', action: () => loadPatientAssignments() }
       ],
       'NURSE': [
-        { text: 'Nurse Cabinet', href: '/nurse-cabinet', class: 'btn primary' },
-        { text: 'My Patients', href: '#', action: () => loadNursePatients() },
-        { text: 'All Patients', href: '#', action: () => loadAllPatients() }
+        { text: 'Кабинет медсестры', href: '/nurse-cabinet', class: 'btn primary' },
+        { text: 'Мои пациенты', href: '#', action: () => loadNursePatients() },
+        { text: 'Все пациенты', href: '#', action: () => loadAllPatients() }
       ],
       'DOCTOR': [
-        { text: 'Doctor Cabinet', href: '/doctor-cabinet', class: 'btn primary' },
-        { text: 'My Patients', href: '#', action: () => loadDoctorPatients() },
-        { text: 'Patients Without Doctor', href: '#', action: () => loadPatientsWithoutDoctor() }
+        { text: 'Кабинет врача', href: '/doctor-cabinet', class: 'btn primary' },
+        { text: 'Мои пациенты', href: '#', action: () => loadDoctorPatients() },
+        { text: 'Пациенты без врача', href: '#', action: () => loadPatientsWithoutDoctor() }
       ],
       'ADMIN': [
-        { text: 'Admin Panel', href: '/admin', class: 'btn primary' },
-        { text: 'Department Cabinet', href: '/department-cabinet', class: 'btn primary' },
-        { text: 'Assignment Admin', href: '/assignment-admin', class: 'btn primary' },
-        { text: 'Assignment Management', href: '#', action: () => loadAssignmentData() }
+        { text: 'Админ панель', href: '/admin', class: 'btn primary' },
+        { text: 'Кабинет отдела', href: '/department-cabinet', class: 'btn primary' },
+        { text: 'Админ назначений', href: '/assignment-admin', class: 'btn primary' },
+        { text: 'Управление назначениями', href: '#', action: () => loadAssignmentData() }
       ]
     };
     
@@ -205,7 +205,7 @@
         department: me.department
       });
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   }
 
@@ -217,7 +217,7 @@
       const patients = await res.json();
       document.getElementById('outAssignments').textContent = show(patients);
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   }
 
@@ -228,7 +228,7 @@
       const patients = await res.json();
       document.getElementById('outAssignments').textContent = show(patients);
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   }
 
@@ -240,7 +240,7 @@
       const patients = await res.json();
       document.getElementById('outAssignments').textContent = show(patients);
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   }
 
@@ -251,7 +251,7 @@
       const patients = await res.json();
       document.getElementById('outAssignments').textContent = show(patients);
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   }
 
@@ -272,7 +272,7 @@
         patientsWithoutDoctorList: patientsWithoutDoctor
       });
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   }
 
@@ -284,7 +284,7 @@
       const users = await res.json();
       document.getElementById('outAssignments').textContent = show(users);
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   });
 
@@ -295,7 +295,7 @@
       const patients = await res.json();
       document.getElementById('outAssignments').textContent = show(patients);
     } catch (e) {
-      document.getElementById('outAssignments').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignments').textContent = 'Ошибка: ' + e.message;
     }
   });
 
@@ -316,7 +316,7 @@
       // Setup role-based navigation
       setupRoleNavigation(me);
     } catch (e) {
-      document.getElementById('outMe').textContent = 'Error loading profile: ' + e.message;
+      document.getElementById('outMe').textContent = 'Ошибка загрузки профиля: ' + e.message;
     }
   });
 </script>

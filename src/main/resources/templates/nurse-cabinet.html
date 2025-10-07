@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nurse Cabinet - Medical App</title>
+  <title>Кабинет медсестры - Медицинское приложение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -49,80 +49,80 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div class="brand">Nurse Cabinet</div>
+    <div class="brand">Кабинет медсестры</div>
     <div>
-      <a href="/dashboard" class="btn">Dashboard</a>
-      <button class="btn" id="logoutBtn">Logout</button>
+      <a href="/dashboard" class="btn">Панель управления</a>
+      <button class="btn" id="logoutBtn">Выйти</button>
     </div>
   </div>
 
   <div class="container">
     <div class="card">
-      <h3>My Information</h3>
+      <h3>Моя информация</h3>
       <div class="info-card" id="nurseInfo">
         <div class="info-row">
-          <span class="info-label">Loading...</span>
+          <span class="info-label">Загрузка...</span>
         </div>
       </div>
-      <button class="btn primary" id="btnLoadInfo">Refresh Info</button>
+      <button class="btn primary" id="btnLoadInfo">Обновить информацию</button>
     </div>
 
     <div class="card">
-      <h3>My Assigned Patients</h3>
-      <button class="btn primary" id="btnLoadAssignedPatients">Load Assigned Patients</button>
+      <h3>Мои назначенные пациенты</h3>
+      <button class="btn primary" id="btnLoadAssignedPatients">Загрузить назначенных пациентов</button>
       <div class="patient-list" id="assignedPatientsList">
         <div class="patient-item">
-          <div class="patient-name">Click "Load Assigned Patients" to see your patients</div>
+          <div class="patient-name">Нажмите "Загрузить назначенных пациентов" чтобы увидеть ваших пациентов</div>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h3>All Active Patients</h3>
-      <button class="btn primary" id="btnLoadAllPatients">Load All Patients</button>
+      <h3>Все активные пациенты</h3>
+      <button class="btn primary" id="btnLoadAllPatients">Загрузить всех пациентов</button>
       <div class="patient-list" id="allPatientsList">
         <div class="patient-item">
-          <div class="patient-name">Click "Load All Patients" to see all patients</div>
+          <div class="patient-name">Нажмите "Загрузить всех пациентов" чтобы увидеть всех пациентов</div>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h3>Assign Myself to Patient</h3>
+      <h3>Назначить себя пациенту</h3>
       <div class="form-group">
-        <label for="assignPatientSelect">Select Patient:</label>
+        <label for="assignPatientSelect">Выберите пациента:</label>
         <select id="assignPatientSelect">
-          <option value="">Loading patients...</option>
+          <option value="">Загрузка пациентов...</option>
         </select>
       </div>
-      <button class="btn success" id="btnAssignMyself">Assign Myself as Nurse</button>
-      <pre id="outSelfAssignment">Click to assign yourself to patient</pre>
+      <button class="btn success" id="btnAssignMyself">Назначить себя медсестрой</button>
+      <pre id="outSelfAssignment">Нажмите чтобы назначить себя пациенту</pre>
     </div>
 
     <div class="card">
-      <h3>Assign Department to Patient</h3>
+      <h3>Назначить отдел пациенту</h3>
       <div class="form-group">
-        <label for="patientSelect">Select Patient:</label>
+        <label for="patientSelect">Выберите пациента:</label>
         <select id="patientSelect">
-          <option value="">Loading patients...</option>
+          <option value="">Загрузка пациентов...</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="departmentSelect">Select Department:</label>
+        <label for="departmentSelect">Выберите отдел:</label>
         <select id="departmentSelect">
-          <option value="">Loading departments...</option>
+          <option value="">Загрузка отделов...</option>
         </select>
       </div>
-      <button class="btn success" id="btnAssignDepartment">Assign Department</button>
-      <pre id="outAssignment">Click to assign department</pre>
+      <button class="btn success" id="btnAssignDepartment">Назначить отдел</button>
+      <pre id="outAssignment">Нажмите чтобы назначить отдел</pre>
     </div>
 
     <div class="card">
-      <h3>My Notifications</h3>
-      <button class="btn primary" id="btnLoadNotifications">Load Notifications</button>
+      <h3>Мои уведомления</h3>
+      <button class="btn primary" id="btnLoadNotifications">Загрузить уведомления</button>
       <div id="notificationsList">
         <div class="notification-item">
-          <div class="notification-message">Click "Load Notifications" to see notifications</div>
+          <div class="notification-message">Нажмите "Загрузить уведомления" чтобы увидеть уведомления</div>
         </div>
       </div>
     </div>
@@ -140,7 +140,7 @@
     const infoCard = document.getElementById('nurseInfo');
     infoCard.innerHTML = `
       <div class="info-row">
-        <span class="info-label">Name:</span>
+        <span class="info-label">Имя:</span>
         <span class="info-value">${nurse.firstName} ${nurse.lastName}</span>
       </div>
       <div class="info-row">
@@ -148,12 +148,12 @@
         <span class="info-value">${nurse.email}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Role:</span>
+        <span class="info-label">Роль:</span>
         <span class="info-value">${nurse.role}</span>
       </div>
       <div class="info-row">
-        <span class="info-label">Department:</span>
-        <span class="info-value">${nurse.department ? nurse.department.name : 'Not assigned'}</span>
+        <span class="info-label">Отдел:</span>
+        <span class="info-value">${nurse.department ? nurse.department.name : 'Не назначен'}</span>
       </div>
     `;
   }
@@ -161,7 +161,7 @@
   function displayPatients(patients, containerId) {
     const container = document.getElementById(containerId);
     if (patients.length === 0) {
-      container.innerHTML = '<div class="patient-item"><div class="patient-name">No patients found</div></div>';
+      container.innerHTML = '<div class="patient-item"><div class="patient-name">Пациенты не найдены</div></div>';
       return;
     }
 
@@ -170,9 +170,9 @@
         <div class="patient-name">${patient.firstName} ${patient.lastName}</div>
         <div class="patient-info">
           Email: ${patient.email}<br>
-          Department: ${patient.department ? patient.department.name : 'Not assigned'}<br>
-          Doctor: ${patient.assignedDoctor ? patient.assignedDoctor.firstName + ' ' + patient.assignedDoctor.lastName : 'Not assigned'}<br>
-          Status: <span class="status ${patient.confirmed ? 'assigned' : 'unassigned'}">${patient.confirmed ? 'Active' : 'Inactive'}</span>
+          Отдел: ${patient.department ? patient.department.name : 'Не назначен'}<br>
+          Врач: ${patient.assignedDoctor ? patient.assignedDoctor.firstName + ' ' + patient.assignedDoctor.lastName : 'Не назначен'}<br>
+          Статус: <span class="status ${patient.confirmed ? 'assigned' : 'unassigned'}">${patient.confirmed ? 'Активен' : 'Неактивен'}</span>
         </div>
       </div>
     `).join('');
@@ -181,7 +181,7 @@
   function displayNotifications(notifications) {
     const container = document.getElementById('notificationsList');
     if (notifications.length === 0) {
-      container.innerHTML = '<div class="notification-item"><div class="notification-message">No notifications</div></div>';
+      container.innerHTML = '<div class="notification-item"><div class="notification-message">Нет уведомлений</div></div>';
       return;
     }
 
@@ -189,9 +189,9 @@
       <div class="notification-item">
         <div class="notification-message">${notification.message}</div>
         <div class="notification-details">
-          Patient: ${notification.patientName}<br>
-          Department: ${notification.departmentName}<br>
-          Type: ${notification.type}
+          Пациент: ${notification.patientName}<br>
+          Отдел: ${notification.departmentName}<br>
+          Тип: ${notification.type}
         </div>
       </div>
     `).join('');
@@ -207,8 +207,8 @@
       const select1 = document.getElementById('patientSelect');
       const select2 = document.getElementById('assignPatientSelect');
       
-      select1.innerHTML = '<option value="">Select a patient...</option>';
-      select2.innerHTML = '<option value="">Select a patient...</option>';
+      select1.innerHTML = '<option value="">Выберите пациента...</option>';
+      select2.innerHTML = '<option value="">Выберите пациента...</option>';
       
       patients.forEach(patient => {
         const option1 = document.createElement('option');
@@ -233,11 +233,11 @@
       const departments = await res.json();
       
       const select = document.getElementById('departmentSelect');
-      select.innerHTML = '<option value="">Select a department...</option>';
+      select.innerHTML = '<option value="">Выберите отдел...</option>';
       departments.forEach(dept => {
         const option = document.createElement('option');
         option.value = dept.id;
-        option.textContent = `${dept.name} - ${dept.description || 'No description'}`;
+        option.textContent = `${dept.name} - ${dept.description || 'Без описания'}`;
         select.appendChild(option);
       });
     } catch (e) {
@@ -262,7 +262,7 @@
 
   document.getElementById('btnLoadAssignedPatients').addEventListener('click', async () => {
     if (!currentNurseId) {
-      document.getElementById('assignedPatientsList').innerHTML = '<div class="patient-item"><div class="patient-name">Please load nurse info first</div></div>';
+      document.getElementById('assignedPatientsList').innerHTML = '<div class="patient-item"><div class="patient-name">Пожалуйста, сначала загрузите информацию о медсестре</div></div>';
       return;
     }
 
@@ -272,7 +272,7 @@
       const patients = await res.json();
       displayPatients(patients, 'assignedPatientsList');
     } catch (e) {
-      document.getElementById('assignedPatientsList').innerHTML = `<div class="patient-item"><div class="patient-name">Error: ${e.message}</div></div>`;
+      document.getElementById('assignedPatientsList').innerHTML = `<div class="patient-item"><div class="patient-name">Ошибка: ${e.message}</div></div>`;
     }
   });
 
@@ -283,7 +283,7 @@
       const patients = await res.json();
       displayPatients(patients, 'allPatientsList');
     } catch (e) {
-      document.getElementById('allPatientsList').innerHTML = `<div class="patient-item"><div class="patient-name">Error: ${e.message}</div></div>`;
+      document.getElementById('allPatientsList').innerHTML = `<div class="patient-item"><div class="patient-name">Ошибка: ${e.message}</div></div>`;
     }
   });
 
@@ -291,7 +291,7 @@
     const patientId = document.getElementById('assignPatientSelect').value;
     
     if (!patientId || !currentNurseId) {
-      document.getElementById('outSelfAssignment').textContent = 'Please select a patient and ensure nurse info is loaded';
+      document.getElementById('outSelfAssignment').textContent = 'Пожалуйста, выберите пациента и убедитесь, что информация о медсестре загружена';
       return;
     }
 
@@ -308,7 +308,7 @@
       document.getElementById('btnLoadAssignedPatients').click();
       document.getElementById('btnLoadAllPatients').click();
     } catch (e) {
-      document.getElementById('outSelfAssignment').textContent = 'Error: ' + e.message;
+      document.getElementById('outSelfAssignment').textContent = 'Ошибка: ' + e.message;
     }
   });
 
@@ -317,7 +317,7 @@
     const departmentId = document.getElementById('departmentSelect').value;
     
     if (!patientId || !departmentId) {
-      document.getElementById('outAssignment').textContent = 'Please select both patient and department';
+      document.getElementById('outAssignment').textContent = 'Пожалуйста, выберите пациента и отдел';
       return;
     }
 
@@ -334,13 +334,13 @@
       document.getElementById('btnLoadAssignedPatients').click();
       document.getElementById('btnLoadAllPatients').click();
     } catch (e) {
-      document.getElementById('outAssignment').textContent = 'Error: ' + e.message;
+      document.getElementById('outAssignment').textContent = 'Ошибка: ' + e.message;
     }
   });
 
   document.getElementById('btnLoadNotifications').addEventListener('click', async () => {
     if (!currentNurseId) {
-      document.getElementById('notificationsList').innerHTML = '<div class="notification-item"><div class="notification-message">Please load nurse info first</div></div>';
+      document.getElementById('notificationsList').innerHTML = '<div class="notification-item"><div class="notification-message">Пожалуйста, сначала загрузите информацию о медсестре</div></div>';
       return;
     }
 
@@ -350,7 +350,7 @@
       const notifications = await res.json();
       displayNotifications(notifications);
     } catch (e) {
-      document.getElementById('notificationsList').innerHTML = `<div class="notification-item"><div class="notification-message">Error: ${e.message}</div></div>`;
+      document.getElementById('notificationsList').innerHTML = `<div class="notification-item"><div class="notification-message">Ошибка: ${e.message}</div></div>`;
     }
   });
 

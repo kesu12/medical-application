@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical App</title>
+    <title>Медицинское приложение</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -30,26 +30,26 @@
 <div class="wrap">
   <div class="card">
     <div class="header">
-      <div class="brand">Medical Application</div>
+      <div class="brand">Медицинское приложение</div>
       <div class="actions">
-        <a class="btn" href="/signin">Login</a>
-        <a class="btn primary" href="/register">Register</a>
-        <a class="btn" href="/dashboard">Dashboard</a>
-        <a class="btn" href="/admin">Admin</a>
-        <a class="btn" href="/assignment-admin">Assignments</a>
-        <a class="btn" href="/public/docs">Docs</a>
+        <a class="btn" href="/signin">Вход</a>
+        <a class="btn primary" href="/register">Регистрация</a>
+        <a class="btn" href="/dashboard">Панель управления</a>
+        <a class="btn" href="/admin">Админ</a>
+        <a class="btn" href="/assignment-admin">Назначения</a>
+        <a class="btn" href="/public/docs">Документация</a>
       </div>
     </div>
     <div class="content">
-      <h1 class="title">Welcome</h1>
-      <p class="muted">This is a lightweight UI powered by Thymeleaf. Use it to quickly test JWT-protected APIs and manage data.</p>
+      <h1 class="title">Добро пожаловать</h1>
+      <p class="muted">Это легковесный интерфейс на основе Thymeleaf. Используйте его для быстрого тестирования JWT-защищенных API и управления данными.</p>
       <div class="actions">
-        <a class="btn primary" href="/register">Register</a>
-        <a class="btn" href="/signin">Open login</a>
-        <a class="btn" href="/dashboard">Open dashboard</a>
-        <a class="btn" href="/admin">Admin panel</a>
-        <a class="btn" href="/assignment-admin">Assignments</a>
-        <a class="btn" href="/">Refresh</a>
+        <a class="btn primary" href="/register">Регистрация</a>
+        <a class="btn" href="/signin">Открыть вход</a>
+        <a class="btn" href="/dashboard">Открыть панель</a>
+        <a class="btn" href="/admin">Админ панель</a>
+        <a class="btn" href="/assignment-admin">Назначения</a>
+        <a class="btn" href="/">Обновить</a>
       </div>
     </div>
   </div>
@@ -60,7 +60,7 @@
   (function(){
     const link = document.querySelector('a[href="/signin"]');
     if (window.AppApi && AppApi.isLoggedIn()) {
-      link.textContent = 'Re-login';
+      link.textContent = 'Повторный вход';
     }
   })();
 </script>
