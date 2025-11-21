@@ -31,12 +31,15 @@ public class UserResponseDto {
     private String firstName;
     private String lastName;
     private String middleName;
+    private String avatarUrl;
+    private String phoneNumber;
     
     @JsonIgnoreProperties({"assignedNurse", "assignedDoctor", "department", "refreshTokens", "password", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
     private User assignedNurse;
     
     @JsonIgnoreProperties({"assignedNurse", "assignedDoctor", "department", "refreshTokens", "password", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
     private User assignedDoctor;
+    private String treatment;
 
     public UserResponseDto(User user) {
         this.userId = user.getUserId();
@@ -45,6 +48,8 @@ public class UserResponseDto {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.middleName = user.getMiddleName();
+        this.avatarUrl = user.getAvatarUrl();
+        this.phoneNumber = user.getPhoneNumber();
         this.role = user.getRole();
         this.department = user.getDepartment();
         this.confirmed = user.getConfirmed();
@@ -52,5 +57,6 @@ public class UserResponseDto {
         this.updatedAt = user.getUpdatedAt();
         this.assignedNurse = user.getAssignedNurse();
         this.assignedDoctor = user.getAssignedDoctor();
+        this.treatment = user.getTreatment();
     }
 }

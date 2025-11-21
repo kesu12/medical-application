@@ -26,6 +26,13 @@ spring:
 server:
   port: 8080
 
+logging:
+  level:
+    by.bsuir.medical_application.security: DEBUG
+    by.bsuir.medical_application.utils: DEBUG
+    by.bsuir.medical_application.controller: DEBUG
+    org.springframework.security: DEBUG
+
 jwt:
   secret: mySuperSecretKeyForJWTGeneration2025
   expiration: 86400000

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -41,4 +42,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByDepartmentIdAndRole(Long departmentId, UserRole role);
     
     List<User> findByDepartmentIdAndRoleAndAssignedDoctorIsNull(Long departmentId, UserRole role);
+    
+    @Query("SELECT u FROM User u WHERE u.createdAt >= :startDate AND u.createdAt <= :endDate")
+    List<User> findByCreatedAtBetween(@Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
 }

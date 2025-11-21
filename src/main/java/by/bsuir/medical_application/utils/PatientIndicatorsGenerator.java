@@ -9,11 +9,14 @@ public class PatientIndicatorsGenerator {
     public static Indicators createRandomIndicators(){
         Random random = new Random();
         
-        int spo2 = 80 + random.nextInt(21);
+        // SpO2: 95-100%
+        int spo2 = 95 + random.nextInt(6);
         
-        int heartrate = 30 + random.nextInt(221);
+        // Heartrate: 60-100 bpm
+        int heartrate = 60 + random.nextInt(41);
         
-        double temperature = 30.0 + random.nextDouble() * 11.0;
+        // Temperature: 36.0-36.9°C
+        double temperature = 36.0 + random.nextDouble() * 0.9;
         
         return Indicators.builder()
                 .heartrate(heartrate)
@@ -26,39 +29,15 @@ public class PatientIndicatorsGenerator {
     public static Indicators createRandomIndicators(boolean includeWarningValues) {
         Random random = new Random();
         
-        int heartrate;
-        double temperature;
-        int spo2;
+        // Always generate normal values regardless of includeWarningValues parameter
+        // SpO2: 95-100%
+        int spo2 = 95 + random.nextInt(6);
         
-        if (includeWarningValues && random.nextDouble() < 0.4) {
-            spo2 = 80 + random.nextInt(17);
-            
-            if (random.nextBoolean()) {
-                heartrate = random.nextBoolean() ? 
-                    30 + random.nextInt(31) :
-                    100 + random.nextInt(151);
-            } else {
-                heartrate = random.nextBoolean() ? 
-                    30 + random.nextInt(31) :
-                    100 + random.nextInt(151);
-            }
-                
-            if (random.nextBoolean()) {
-                temperature = random.nextBoolean() ?
-                    30.0 + random.nextDouble() * 5.0 :
-                    37.0 + random.nextDouble() * 4.0;
-            } else {
-                temperature = random.nextBoolean() ?
-                    30.0 + random.nextDouble() * 5.0 :
-                    37.0 + random.nextDouble() * 4.0;
-            }
-        } else {
-            spo2 = 96 + random.nextInt(5);
-            
-            heartrate = 60 + random.nextInt(41);
-            
-            temperature = 35.0 + random.nextDouble() * 2.0;
-        }
+        // Heartrate: 60-100 bpm
+        int heartrate = 60 + random.nextInt(41);
+        
+        // Temperature: 36.0-36.9°C
+        double temperature = 36.0 + random.nextDouble() * 0.9;
         
         return Indicators.builder()
                 .heartrate(heartrate)
@@ -75,17 +54,18 @@ public class PatientIndicatorsGenerator {
             return createRandomIndicators();
         }
         
+        // Generate stable indicators with small variations, but always within normal range
+        // Temperature: 36.0-36.9°C with small variation (±0.1°C)
         double temperature = previousIndicators.getTemperature() + (random.nextDouble() - 0.5) * 0.2;
+        temperature = Math.max(36.0, Math.min(36.9, temperature));
         
-        int heartrate = previousIndicators.getHeartrate() + random.nextInt(41) - 20;
+        // Heartrate: 60-100 bpm with small variation (±5 bpm)
+        int heartrate = previousIndicators.getHeartrate() + random.nextInt(11) - 5;
+        heartrate = Math.max(60, Math.min(100, heartrate));
         
+        // SpO2: 95-100% with small variation (±1%)
         int spo2 = previousIndicators.getSpo2() + random.nextInt(3) - 1;
-        
-        temperature = Math.max(30.0, Math.min(41.0, temperature));
-        
-        heartrate = Math.max(30, Math.min(250, heartrate));
-        
-        spo2 = Math.max(80, Math.min(100, spo2));
+        spo2 = Math.max(95, Math.min(100, spo2));
         
         return Indicators.builder()
                 .heartrate(heartrate)

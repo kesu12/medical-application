@@ -2,6 +2,9 @@ package by.bsuir.medical_application.websocket;
 
 import by.bsuir.medical_application.dto.MedicalIndicatorsDto;
 import by.bsuir.medical_application.model.Indicators;
+import by.bsuir.medical_application.model.User;
+import by.bsuir.medical_application.repository.UserRepository;
+import by.bsuir.medical_application.service.NotificationService;
 import by.bsuir.medical_application.utils.PatientIndicatorsGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,6 +27,8 @@ public class MedicalIndicatorsWebSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ScheduledExecutorService globalScheduler;
+    private final NotificationService notificationService;
+    private final UserRepository userRepository;
     
     private final Map<Long, Indicators> lastIndicators = new ConcurrentHashMap<>();
     private final Map<Long, Boolean> activeMonitoring = new ConcurrentHashMap<>();
@@ -32,8 +37,12 @@ public class MedicalIndicatorsWebSocketController {
     
     private final AtomicInteger threadCounter = new AtomicInteger(0);
 
-    public MedicalIndicatorsWebSocketController(SimpMessagingTemplate messagingTemplate) {
+    public MedicalIndicatorsWebSocketController(SimpMessagingTemplate messagingTemplate,
+                                                NotificationService notificationService,
+                                                UserRepository userRepository) {
         this.messagingTemplate = messagingTemplate;
+        this.notificationService = notificationService;
+        this.userRepository = userRepository;
         this.globalScheduler = Executors.newScheduledThreadPool(10);
     }
 
@@ -176,6 +185,7 @@ public class MedicalIndicatorsWebSocketController {
             );
             
             sendAlertToDoctor(indicators.getPatientId(), alert);
+            notificationService.notifyDoctorAboutIndicators(indicators.getPatientId(), category, warningMessage);
             
             log.warn("Medical warning sent to doctor for patient {}: {}", indicators.getPatientId(), warningMessage);
         }
@@ -192,7 +202,10 @@ public class MedicalIndicatorsWebSocketController {
 
     
     private Long getAssignedDoctorId(Long patientId) {
-        return 1L;
+        return userRepository.findById(patientId)
+                .map(User::getAssignedDoctor)
+                .map(User::getUserId)
+                .orElse(null);
     }
 
    

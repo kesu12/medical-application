@@ -1,6 +1,7 @@
 package by.bsuir.medical_application.controller;
 
 import by.bsuir.medical_application.dto.NotificationDto;
+import by.bsuir.medical_application.dto.TreatmentUpdateDto;
 import by.bsuir.medical_application.dto.UserResponseDto;
 import by.bsuir.medical_application.model.User;
 import by.bsuir.medical_application.service.NotificationService;
@@ -38,5 +39,26 @@ public class DoctorCabinetController {
         return ResponseEntity.ok(notifications);
     }
     
+    @PutMapping("/{doctorId}/patients/{patientId}/treatment")
+    public ResponseEntity<UserResponseDto> updatePatientTreatment(
+            @PathVariable Long doctorId,
+            @PathVariable Long patientId,
+            @RequestBody TreatmentUpdateDto body
+    ) {
+        User updated = userService.updatePatientTreatment(doctorId, patientId, body.getTreatment());
+        return ResponseEntity.ok(new UserResponseDto(updated));
+    }
+
+    @GetMapping("/{doctorId}/patients/{patientId}/treatment")
+    public ResponseEntity<String> getPatientTreatment(
+            @PathVariable Long doctorId,
+            @PathVariable Long patientId
+    ) {
+        User user = userService.getUserById(patientId);
+        if (user.getAssignedDoctor() == null || !user.getAssignedDoctor().getUserId().equals(doctorId)) {
+            return ResponseEntity.status(403).build();
+        }
+        return ResponseEntity.ok(user.getTreatment());
+    }
 }
 

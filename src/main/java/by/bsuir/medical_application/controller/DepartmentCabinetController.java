@@ -2,7 +2,9 @@ package by.bsuir.medical_application.controller;
 
 import by.bsuir.medical_application.dto.NotificationDto;
 import by.bsuir.medical_application.dto.UserResponseDto;
+import by.bsuir.medical_application.model.Department;
 import by.bsuir.medical_application.model.User;
+import by.bsuir.medical_application.service.DepartmentService;
 import by.bsuir.medical_application.service.NotificationService;
 import by.bsuir.medical_application.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,22 @@ public class DepartmentCabinetController {
     
     private final UserService userService;
     private final NotificationService notificationService;
+    private final DepartmentService departmentService;
     
-    public DepartmentCabinetController(UserService userService, NotificationService notificationService) {
+    public DepartmentCabinetController(UserService userService, NotificationService notificationService, DepartmentService departmentService) {
         this.userService = userService;
         this.notificationService = notificationService;
+        this.departmentService = departmentService;
+    }
+    
+    @GetMapping("/all")
+    public ResponseEntity<Iterable<Department>> getAllDepartments() {
+        try {
+            Iterable<Department> departments = departmentService.getAllDepartments();
+            return ResponseEntity.ok(departments);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
     
     @GetMapping("/{departmentId}/patients")

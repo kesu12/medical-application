@@ -52,6 +52,12 @@ public class User implements UserDetails {
     @Column(name = "middle_name")
     private String middleName;
 
+    @Column(name = "avatar_url", columnDefinition = "TEXT")
+    private String avatarUrl;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Column(name = "created_at", updatable = false)
     @Builder.Default
     @CreationTimestamp
@@ -83,6 +89,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"user"})
     private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+    @Column(name = "treatment", length = 2048)
+    private String treatment;
 
 
     @PreUpdate

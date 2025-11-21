@@ -34,6 +34,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authenticationManager;
+    private final NotificationService notificationService;
     
     @Value("${jwt.expiration}")
     private long jwtExpiration;
@@ -128,7 +129,7 @@ public class AuthService {
     public void changePassword(User user, ChangePasswordRequest changePasswordRequest) {
         try {
             if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
-                throw new RuntimeException("Current password is incorrect");
+                throw new RuntimeException("Вы ввели неправильный пароль");
             }
 
             if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmPassword())) {
@@ -143,6 +144,7 @@ public class AuthService {
             userRepository.save(user);
 
             refreshTokenService.deleteByUserId(user.getUserId());
+            notificationService.notifyAccountSecurityUpdate(user, "Пароль учётной записи был изменён");
 
         } catch (Exception e) {
             log.error("Error during password change: {}", e.getMessage());

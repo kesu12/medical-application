@@ -3,11 +3,13 @@ package by.bsuir.medical_application.controller;
 import by.bsuir.medical_application.dto.AuthRequest;
 import by.bsuir.medical_application.dto.AuthResponse;
 import by.bsuir.medical_application.dto.ChangePasswordRequest;
+import by.bsuir.medical_application.dto.ProfileUpdateDto;
 import by.bsuir.medical_application.dto.RefreshTokenRequest;
 import by.bsuir.medical_application.dto.UserCreateDto;
 import by.bsuir.medical_application.dto.UserResponseDto;
 import by.bsuir.medical_application.model.User;
 import by.bsuir.medical_application.service.AuthService;
+import by.bsuir.medical_application.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthorizationController {
 
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody UserCreateDto userCreateDto) {
@@ -70,6 +73,8 @@ public class AuthorizationController {
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
                     .middleName(user.getMiddleName())
+                    .avatarUrl(user.getAvatarUrl())
+                    .phoneNumber(user.getPhoneNumber())
                     .role(user.getRole())
                     .department(user.getDepartment())
                     .confirmed(user.getConfirmed())
@@ -94,6 +99,36 @@ public class AuthorizationController {
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error("Password change failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserResponseDto> updateProfile(@Valid @RequestBody ProfileUpdateDto profileUpdateDto,
+                                                         Authentication authentication) {
+        try {
+            User user = (User) authentication.getPrincipal();
+            User updatedUser = userService.updateProfile(user.getUserId(), profileUpdateDto);
+            UserResponseDto userResponseDto = UserResponseDto.builder()
+                    .userId(updatedUser.getUserId())
+                    .username(updatedUser.getUsername())
+                    .email(updatedUser.getEmail())
+                    .firstName(updatedUser.getFirstName())
+                    .lastName(updatedUser.getLastName())
+                    .middleName(updatedUser.getMiddleName())
+                    .avatarUrl(updatedUser.getAvatarUrl())
+                    .phoneNumber(updatedUser.getPhoneNumber())
+                    .role(updatedUser.getRole())
+                    .department(updatedUser.getDepartment())
+                    .confirmed(updatedUser.getConfirmed())
+                    .createdAt(updatedUser.getCreatedAt())
+                    .updatedAt(updatedUser.getUpdatedAt())
+                    .assignedNurse(updatedUser.getAssignedNurse())
+                    .assignedDoctor(updatedUser.getAssignedDoctor())
+                    .build();
+            return ResponseEntity.ok(userResponseDto);
+        } catch (Exception e) {
+            log.error("Profile update failed: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

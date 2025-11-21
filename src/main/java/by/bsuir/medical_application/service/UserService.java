@@ -1,10 +1,9 @@
 package by.bsuir.medical_application.service;
 
 import by.bsuir.medical_application.dto.BulkUserUpdateDto;
+import by.bsuir.medical_application.dto.ProfileUpdateDto;
 import by.bsuir.medical_application.dto.UserAdminUpdateDto;
-import by.bsuir.medical_application.dto.UserCreateDto;
 import by.bsuir.medical_application.dto.UserUpdateDto;
-import by.bsuir.medical_application.exceptions.AccountCreatingException;
 import by.bsuir.medical_application.exceptions.AccountUpdatingException;
 import by.bsuir.medical_application.model.Department;
 import by.bsuir.medical_application.model.User;
@@ -28,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationService notificationService;
 
 //    public User createUser(UserCreateDto userDto) {
 //
@@ -84,6 +84,16 @@ public class UserService {
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             user.setRole(role);
+            
+            // Automatically assign Nurse Department when role is changed to NURSE
+            if (role == UserRole.NURSE && user.getDepartment() == null) {
+                Department nurseDepartment = departmentRepository.findByName("Nurse Department");
+                if (nurseDepartment != null) {
+                    user.setDepartment(nurseDepartment);
+                    log.info("User {} assigned to Nurse Department", user.getUsername());
+                }
+            }
+            
             log.info("User {} role changed to {}", user.getUsername(), role);
             return userRepository.save(user);
         }
@@ -100,6 +110,47 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.getUserByUserId(id);
+    }
+
+    public User updateProfile(Long userId, ProfileUpdateDto profileUpdateDto) {
+        User user = getUserById(userId);
+        
+        if (profileUpdateDto.getFirstName() != null && !profileUpdateDto.getFirstName().trim().isEmpty()) {
+            user.setFirstName(profileUpdateDto.getFirstName().trim());
+        } else if (profileUpdateDto.getFirstName() != null) {
+            user.setFirstName(null);
+        }
+        
+        if (profileUpdateDto.getLastName() != null && !profileUpdateDto.getLastName().trim().isEmpty()) {
+            user.setLastName(profileUpdateDto.getLastName().trim());
+        } else if (profileUpdateDto.getLastName() != null) {
+            user.setLastName(null);
+        }
+        
+        if (profileUpdateDto.getMiddleName() != null && !profileUpdateDto.getMiddleName().trim().isEmpty()) {
+            user.setMiddleName(profileUpdateDto.getMiddleName().trim());
+        } else if (profileUpdateDto.getMiddleName() != null) {
+            user.setMiddleName(null);
+        }
+        
+        if (profileUpdateDto.getEmail() != null && !profileUpdateDto.getEmail().trim().isEmpty()) {
+            user.setEmail(profileUpdateDto.getEmail().trim());
+        }
+        
+        if (profileUpdateDto.getPhoneNumber() != null && !profileUpdateDto.getPhoneNumber().trim().isEmpty()) {
+            user.setPhoneNumber(profileUpdateDto.getPhoneNumber().trim());
+        } else if (profileUpdateDto.getPhoneNumber() != null) {
+            user.setPhoneNumber(null);
+        }
+        
+        if (profileUpdateDto.getAvatarUrl() != null && !profileUpdateDto.getAvatarUrl().trim().isEmpty()) {
+            user.setAvatarUrl(profileUpdateDto.getAvatarUrl().trim());
+        } else if (profileUpdateDto.getAvatarUrl() != null) {
+            user.setAvatarUrl(null);
+        }
+        
+        log.info("Profile updated for user {}", user.getUsername());
+        return userRepository.save(user);
     }
 
     public User updateUserPassword(Long userId, UserUpdateDto userUpdateDto) {
@@ -142,19 +193,73 @@ public class UserService {
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+            boolean wasConfirmed = user.getConfirmed() != null && user.getConfirmed();
+            
+            // Update profile fields
+            if (adminUpdateDto.getFirstName() != null) {
+                if (adminUpdateDto.getFirstName().trim().isEmpty()) {
+                    user.setFirstName(null);
+                } else {
+                    user.setFirstName(adminUpdateDto.getFirstName().trim());
+                }
+            }
+            if (adminUpdateDto.getLastName() != null) {
+                if (adminUpdateDto.getLastName().trim().isEmpty()) {
+                    user.setLastName(null);
+                } else {
+                    user.setLastName(adminUpdateDto.getLastName().trim());
+                }
+            }
+            if (adminUpdateDto.getMiddleName() != null) {
+                if (adminUpdateDto.getMiddleName().trim().isEmpty()) {
+                    user.setMiddleName(null);
+                } else {
+                    user.setMiddleName(adminUpdateDto.getMiddleName().trim());
+                }
+            }
+            if (adminUpdateDto.getEmail() != null && !adminUpdateDto.getEmail().trim().isEmpty()) {
+                user.setEmail(adminUpdateDto.getEmail().trim());
+            }
+            if (adminUpdateDto.getPhoneNumber() != null) {
+                if (adminUpdateDto.getPhoneNumber().trim().isEmpty()) {
+                    user.setPhoneNumber(null);
+                } else {
+                    user.setPhoneNumber(adminUpdateDto.getPhoneNumber().trim());
+                }
+            }
+            if (adminUpdateDto.getAvatarUrl() != null) {
+                if (adminUpdateDto.getAvatarUrl().trim().isEmpty()) {
+                    user.setAvatarUrl(null);
+                } else {
+                    user.setAvatarUrl(adminUpdateDto.getAvatarUrl().trim());
+                }
+            }
             
             if (adminUpdateDto.getRole() != null) {
                 user.setRole(adminUpdateDto.getRole());
+                
+                // Automatically assign Nurse Department when role is changed to NURSE
+                if (adminUpdateDto.getRole() == UserRole.NURSE && user.getDepartment() == null) {
+                    Department nurseDepartment = departmentRepository.findByName("Nurse Department");
+                    if (nurseDepartment != null) {
+                        user.setDepartment(nurseDepartment);
+                        log.info("User {} assigned to Nurse Department", user.getUsername());
+                    }
+                }
             }
             
-            user.setConfirmed(adminUpdateDto.isConfirmed());
-            
-            if (adminUpdateDto.isConfirmed() && adminUpdateDto.getDepartmentId() != null) {
+            // Update department if provided
+            if (adminUpdateDto.getDepartmentId() != null) {
                 Optional<Department> departmentOpt = departmentRepository.findById(adminUpdateDto.getDepartmentId());
                 if (departmentOpt.isPresent()) {
                     user.setDepartment(departmentOpt.get());
                     log.info("User {} assigned to department {}", user.getUsername(), departmentOpt.get().getName());
+                    // Preserve confirmed status when only changing department
+                    user.setConfirmed(wasConfirmed);
                 }
+            } else {
+                // Only update confirmed status if department is not being changed
+                user.setConfirmed(adminUpdateDto.isConfirmed());
             }
             
             log.info("User {} updated by admin", user.getUsername());
@@ -225,7 +330,18 @@ public class UserService {
                 if (bulkUpdateDto.getRole() == null) {
                     throw new AccountUpdatingException("Role is required for role change");
                 }
-                updatedUsers.forEach(user -> user.setRole(bulkUpdateDto.getRole()));
+                Department nurseDepartment = null;
+                if (bulkUpdateDto.getRole() == UserRole.NURSE) {
+                    nurseDepartment = departmentRepository.findByName("Nurse Department");
+                }
+                final Department finalNurseDept = nurseDepartment;
+                updatedUsers.forEach(user -> {
+                    user.setRole(bulkUpdateDto.getRole());
+                    // Automatically assign Nurse Department when role is changed to NURSE
+                    if (bulkUpdateDto.getRole() == UserRole.NURSE && user.getDepartment() == null && finalNurseDept != null) {
+                        user.setDepartment(finalNurseDept);
+                    }
+                });
                 log.info("Bulk changed role to {} for {} users", bulkUpdateDto.getRole(), updatedUsers.size());
             }
             case ASSIGN_DEPARTMENT -> {
@@ -292,7 +408,9 @@ public class UserService {
         patient.setAssignedNurse(nurse);
         log.info("Nurse {} assigned to patient {}", nurse.getUsername(), patient.getUsername());
         
-        return userRepository.save(patient);
+        User updatedPatient = userRepository.save(patient);
+        notificationService.notifyPatientAssignedNurse(updatedPatient);
+        return updatedPatient;
     }
 
     public User assignDoctorToPatient(Long patientId, Long doctorId) {
@@ -317,7 +435,9 @@ public class UserService {
         patient.setAssignedDoctor(doctor);
         log.info("Doctor {} assigned to patient {}", doctor.getUsername(), patient.getUsername());
         
-        return userRepository.save(patient);
+        User updatedPatient = userRepository.save(patient);
+        notificationService.notifyPatientAssignedDoctor(updatedPatient);
+        return updatedPatient;
     }
 
     public User assignDepartmentToPatient(Long patientId, Long departmentId) {
@@ -338,7 +458,9 @@ public class UserService {
         patient.setDepartment(department);
         log.info("Department {} assigned to patient {}", department.getName(), patient.getUsername());
         
-        return userRepository.save(patient);
+        User updatedPatient = userRepository.save(patient);
+        notificationService.notifyPatientAssignedDepartment(updatedPatient);
+        return updatedPatient;
     }
 
     public List<User> getActivePatients() {
@@ -384,9 +506,36 @@ public class UserService {
             throw new AccountUpdatingException("User is not a doctor");
         }
         
+        // Only change department, preserve confirmed status
         doctor.setDepartment(department);
         log.info("Department {} assigned to doctor {}", department.getName(), doctor.getUsername());
         
         return userRepository.save(doctor);
+    }
+
+    public User updatePatientTreatment(Long doctorId, Long patientId, String treatment) {
+        Optional<User> patientOpt = userRepository.findById(patientId);
+        if (patientOpt.isEmpty()) {
+            throw new AccountUpdatingException("Patient not found");
+        }
+
+        User patient = patientOpt.get();
+        if (patient.getRole() != UserRole.PATIENT) {
+            throw new AccountUpdatingException("User is not a patient");
+        }
+
+        User assignedDoctor = patient.getAssignedDoctor();
+        if (assignedDoctor == null || !assignedDoctor.getUserId().equals(doctorId)) {
+            throw new AccountUpdatingException("This patient is not assigned to the specified doctor");
+        }
+
+        patient.setTreatment(treatment);
+        User updatedPatient = userRepository.save(patient);
+        notificationService.notifyPatientTreatmentUpdated(updatedPatient);
+        return updatedPatient;
+    }
+
+    public List<User> getUsersByCreatedAtBetween(java.time.Instant startDate, java.time.Instant endDate) {
+        return userRepository.findByCreatedAtBetween(startDate, endDate);
     }
 }

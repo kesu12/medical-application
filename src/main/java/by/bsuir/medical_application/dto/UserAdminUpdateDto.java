@@ -21,6 +21,14 @@ public class UserAdminUpdateDto {
     private UserRole role;
 
     private String notes;
+    
+    // Profile fields
+    private String firstName;
+    private String lastName;
+    private String middleName;
+    private String email;
+    private String phoneNumber;
+    private String avatarUrl;
 
     @AssertTrue(message = "Department is required for confirmed users")
     public boolean isDepartmentValid() {

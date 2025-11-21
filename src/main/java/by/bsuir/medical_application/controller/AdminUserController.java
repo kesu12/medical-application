@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,6 +162,29 @@ public class AdminUserController {
             return ResponseEntity.ok(new UserResponseDto(doctor));
         } catch (Exception e) {
             log.error("Failed to change doctor department: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/by-created-date")
+    public ResponseEntity<List<UserResponseDto>> getUsersByCreatedDate(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        try {
+            List<User> users;
+            if (startDate != null && endDate != null) {
+                Instant start = LocalDate.parse(startDate).atStartOfDay().toInstant(ZoneOffset.UTC);
+                Instant end = LocalDate.parse(endDate).atTime(23, 59, 59).toInstant(ZoneOffset.UTC);
+                users = userService.getUsersByCreatedAtBetween(start, end);
+            } else {
+                users = userService.getAllUsers();
+            }
+            List<UserResponseDto> response = users.stream()
+                    .map(UserResponseDto::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Failed to get users by created date: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
