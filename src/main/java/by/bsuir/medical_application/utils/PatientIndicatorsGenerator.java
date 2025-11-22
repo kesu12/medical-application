@@ -9,8 +9,8 @@ public class PatientIndicatorsGenerator {
     public static Indicators createRandomIndicators(){
         Random random = new Random();
         
-        // SpO2: 95-100%
-        int spo2 = 95 + random.nextInt(6);
+        // SpO2: 98-100%
+        int spo2 = 98 + random.nextInt(3);
         
         // Heartrate: 60-100 bpm
         int heartrate = 60 + random.nextInt(41);
@@ -31,8 +31,8 @@ public class PatientIndicatorsGenerator {
         
         // Always generate normal values regardless of includeWarningValues parameter
         // SpO2: 95-100%
-        int spo2 = 95 + random.nextInt(6);
-        
+        int spo2 = 98 + random.nextInt(3);
+
         // Heartrate: 60-100 bpm
         int heartrate = 60 + random.nextInt(41);
         
@@ -65,7 +65,7 @@ public class PatientIndicatorsGenerator {
         
         // SpO2: 95-100% with small variation (±1%)
         int spo2 = previousIndicators.getSpo2() + random.nextInt(3) - 1;
-        spo2 = Math.max(95, Math.min(100, spo2));
+        spo2 = Math.max(98, Math.min(100, spo2));
         
         return Indicators.builder()
                 .heartrate(heartrate)
