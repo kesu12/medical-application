@@ -29,36 +29,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final NotificationService notificationService;
 
-//    public User createUser(UserCreateDto userDto) {
-//
-//        if (userRepository.existsByUsername(userDto.getUsername())) {
-//            throw new AccountCreatingException("Username already exists");
-//        }
-//        if (userRepository.existsByEmail(userDto.getEmail())) {
-//            throw new AccountCreatingException("Email already exists");
-//        }
-//
-//        if(userDto.getPassword().length() < 6) {
-//            throw new AccountCreatingException("Password too short");
-//        }
-//
-//        if(!userDto.getPassword().equals(userDto.getConfirmPassword())) {
-//            throw new AccountCreatingException("Passwords do not match");
-//        }
-//
-//        User user = new User();
-//        user.setUsername(userDto.getUsername());
-//        user.setEmail(userDto.getEmail());
-//        user.setPassword(userDto.getPassword());
-//        user.setFirstName(userDto.getFirstName());
-//        user.setMiddleName(userDto.getMiddleName());
-//        user.setLastName(userDto.getLastName());
-//
-//
-//
-//        return userRepository.save(user);
-//    }
-
     public List<User> getUnconfirmedUsers() {
         return userRepository.findAllByRole(UserRole.DEFAULT);
     }
